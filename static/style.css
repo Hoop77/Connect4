@@ -1,0 +1,130 @@
+html,
+body {
+  height: 100%;
+  /* important to vertically align the container */
+  margin: 0;
+  padding: 0;
+}
+
+.vertical-center {
+  min-height: 100%;
+  /* Fallback for browsers do NOT support vh unit */
+  min-height: 100vh;
+  /* These two lines are counted as one */
+  display: flex;
+  align-items: center;
+}
+
+body {
+  background-image: linear-gradient(rgba(62, 20, 20, 0.4), rgba(62, 20, 20, 0.4)), url(background.jpg);
+  background-size: cover;
+  background-position: center;
+  font-family: Ubuntu;
+  font-weight: 400;
+  position: relative;
+  height: 100vh;
+  color: #555;
+}
+
+.top {
+  padding-top: 3vh;
+}
+
+.bottom {
+  padding-bottom: 3vh;
+}
+
+.col-3 {
+  background-color: aliceblue;
+}
+
+.center {
+  margin: auto;
+}
+
+.container {
+  background-color: white;
+}
+
+.setting-drop-down {
+  margin-top: 10%;
+  width: 70%;
+}
+
+.confirm {
+  width: 70%;
+}
+
+/* Spielerauswahl Kreis-Buttons */
+
+.btn-circle.btn-xl {
+  width: 70px;
+  height: 70px;
+  padding: 10px 16px;
+  font-size: 24px;
+  line-height: 1.33;
+  border-radius: 35px;
+}
+
+.human-icon,
+.robot-icon {
+  margin-top: 15%;
+  margin-bottom: 15%;
+}
+
+.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
+  background-color: #5087D1 !important;
+}
+
+select {
+  background-color: #5087D1 !important;
+  color: white !important;
+}
+
+.btn-primary-outline, .btn:focus, .btn:active {
+  box-shadow: none;
+  outline: none !important;
+}
+
+  div.modal-footer {
+    text-align: center !important;
+  }
+
+h5 {
+  margin-top: 45%;
+}
+
+#grid {
+  margin-top: 5%;
+  margin-bottom: 10%;
+  margin-left: 4%;
+}
+
+#player1robot {
+  margin-top: 30%;
+}
+
+#player2robot {
+  margin-top: 30%;
+}
+
+#back1, #back2 {
+  margin-top: 10%;
+}
+
+#back3, #back4 {
+  margin-left: 40%;
+}
+
+#setList1, #setList2 {
+  margin-top: 5%;
+}
+
+.disableAndOpacity {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.disableEvents {
+  pointer-events: none;
+}

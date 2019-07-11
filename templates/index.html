@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+  <!-- Popper JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <title>Reinforcement Learning</title>
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+  <div class="vertical-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-3 text-center top">
+          <h3>Spieler 1</h3>
+        </div>
+        <div class="col-6 text-center top">
+          <div id="gameInfo" class="center">
+          </div>
+        </div>
+        <div class="col-3 text-center top">
+          <h3>Spieler 2</h3>
+        </div>
+      </div>
+      <div class="row">
+        <div id="player1box" class="col-3 text-center">
+          <div id="playerPickBox1">
+            <div><button id="player1robot" type="button" class="btn btn-danger btn-circle btn-xl robot-icon toolEvent"
+                data-toggle="tooltip" data-placement="left" title="Computer"><i
+                  class="fab fa-reddit-alien fa-lg"></i></button></div>
+            <div class="d-flex">
+              <hr class="my-auto flex-grow-1">
+              <div class="px-4">Oder</div>
+              <hr class="my-auto flex-grow-1">
+            </div>
+            <div><button id="player1human" type="button" class="btn btn-danger btn-circle btn-xl human-icon toolEvent"
+                data-toggle="tooltip" data-placement="left" title="Mensch"><i
+                  class="fas fa-user-ninja fa-lg"></i></button></div>
+          </div>
+          <div id="settingsAiTemplate1" style="display: none">
+            <form class="form-horizontal">
+              <div>
+                <div class="form-group setting-drop-down center">
+                  <label for="gameMode1">Alogrithmus</label>
+                  <select id="gameMode1" class="form-control">
+                    <option value="ql">Q-Learning</option>
+                    <option value="mm">Minimax</option>
+                    <option value="rb">Random/Block</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <div id="deep1Box" class="form-group setting-drop-down center" style="display: none">
+                  <label for="deep1">Züge im voraus</label>
+                  <select id="deep1" class="form-control">
+                    <option>3</option>
+                    <option>5</option>
+                    <option>7</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <div id="expSet1Box" class="form-group setting-drop-down center">
+                  <label for="expSet1">Lernepisoden</label>
+                  <select id="expSet1" class="form-control">
+                    <option>5000</option>
+                    <option>1000</option>
+                    <option>500</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <div id="exploSet1Box" class="form-group setting-drop-down center">
+                  <label for="exploSet1">Explorationsfaktor</label>
+                  <select id="exploSet1" class="form-control">
+                    <option>0.9</option>
+                    <option>0.7</option>
+                    <option>0.5</option>
+                  </select>
+                </div>
+                <div>
+                  <button id="back1" type="button" class="btn btn-primary-outline"><i
+                      class="fas fa-undo fa-lg"></i></i></button>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div id="humanTemplate1" style="display: none">
+            <h5>Ausgewählt:</h5>
+            <button id="aiTemplate1player1humanPicked" type="button" class="btn btn-danger btn-circle btn-xl toolEvent"
+              data-toggle="tooltip" data-placement="left" title="Mensch"><i
+                class="fas fa-user-ninja fa-lg"></i></button>
+          </div>
+          <div id="aiTemplate1" style="display: none">
+            <h5>Ausgewählt:</h5>
+            <button id="player1robotPicked" type="button" class="btn btn-danger btn-circle btn-xl toolEvent"
+              data-toggle="tooltip" data-placement="left" title="Computer"><i
+                class="fab fa-reddit-alien fa-lg"></i></button>
+            <div id="setList1">
+            </div>
+          </div>
+        </div>
+        <div class="col-6 text-center">
+          <div id="grid" class="center"></div>
+        </div>
+        <div id="player2box" class="col-3 text-center ">
+          <div id="playerPickBox2">
+            <div><button id="player2robot" type="button" class="btn btn-warning btn-circle btn-xl robot-icon toolEvent"
+                data-toggle="tooltip" data-placement="right" title="Computer"><i
+                  class="fab fa-reddit-alien fa-lg"></i></button></div>
+            <div class="d-flex">
+              <hr class="my-auto flex-grow-1">
+              <div class="px-4">Oder</div>
+              <hr class="my-auto flex-grow-1">
+            </div>
+            <div><button id="player2human" type="button" class="btn btn-warning btn-circle btn-xl human-icon toolEvent"
+                data-toggle="tooltip" data-placement="right" title="Mensch"><i
+                  class="fas fa-user-ninja fa-lg"></i></button></div>
+          </div>
+          <div id="settingsAiTemplate2" style="display: none">
+            <form class="form-horizontal">
+              <div>
+                <div class="form-group setting-drop-down center">
+                  <label for="gameMode2">Alogrithmus</label>
+                  <select id="gameMode2" class="form-control">
+                    <option value="ql">Q-Learning</option>
+                    <option value="mm">Minimax</option>
+                    <option value="rb">Random/Block</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <div id="deep2Box" class="form-group setting-drop-down center" style="display: none">
+                  <label for="deep2">Züge im voraus</label>
+                  <select id="deep2" class="form-control">
+                    <option>3</option>
+                    <option>5</option>
+                    <option>7</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <div id="expSet2Box" class="form-group setting-drop-down center">
+                  <label for="expSet2">Lernepisoden</label>
+                  <select id="expSet2" class="form-control">
+                    <option>5000</option>
+                    <option>1000</option>
+                    <option>500</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <div id="exploSet2Box" class="form-group setting-drop-down center">
+                  <label for="exploSet2">Explorationsfaktor</label>
+                  <select id="exploSet2" class="form-control">
+                    <option>0.9</option>
+                    <option>0.7</option>
+                    <option>0.5</option>
+                  </select>
+                </div>
+                <div>
+                  <button id="back2" type="button" class="btn btn-primary-outline"><i
+                      class="fas fa-undo fa-lg"></i></i></button>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div id="humanTemplate2" style="display: none">
+            <h5>Ausgewählt:</h5>
+            <button id="player2humanPicked" type="button" class="btn btn-warning btn-circle btn-xl toolEvent"
+              data-toggle="tooltip" data-placement="right" title="Mensch"><i
+                class="fas fa-user-ninja fa-lg"></i></button>
+          </div>
+          <div id="aiTemplate2" style="display: none">
+            <h5>Ausgewählt:</h5>
+            <button id="player2robotPicked" type="button" class="btn btn-warning btn-circle btn-xl toolEvent"
+              data-toggle="tooltip" data-placement="right" title="Computer"><i
+                class="fab fa-reddit-alien fa-lg"></i></button>
+            <div id="setList2">
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <div class="row">
+        <div id="confirmBox1" class="col-3 text-center bottom">
+          <div id="confirmTemplate1" style="display: none">
+            <button type="button" id="confirmBtn1" class="btn btn-primary confirm">Bestätigen</button>
+          </div>
+          <div>
+            <button id="back3" type="button" class="btn btn-primary-outline" style="display: none"><i
+                class="fas fa-undo fa-lg"></i></i></button>
+          </div>
+        </div>
+        <div class="col-6 text-center bottom">
+          <div>
+            <button id="help" type="button" class="btn btn-primary-outline" data-toggle="modal"
+              data-target="#settingsModal"><i class="far fa-question-circle fa-lg"></i></button>
+            <button id="startGame" type="button" class="btn btn-primary toolEvent">Spiel starten</button>
+            <button id="delete" type="button" class="btn btn-primary-outline"><i
+                class="far fa-trash-alt fa-lg"></i></button>
+          </div>
+        </div>
+        <div id="confirmBox2" class="col-3 text-center bottom">
+          <div id="confirmTemplate2" style="display: none">
+            <button type="button" id="confirmBtn2" class="btn btn-primary confirm">Bestätigen</button>
+          </div>
+          <div>
+            <button id="back4" type="button" class="btn btn-primary-outline" style="display: none"><i
+                class="fas fa-undo fa-lg"></i></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='script.js') }}" type="text/javascript"></script>
+</body>
+
+<!-- The Modal -->
+<div id="settingsModal" class="modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Ups!</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        Bitte wähle die Einstellungen für Spieler 1 und Spieler 2 aus bevor du das Spiel startest.
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-auto mx-auto">
+              <button type="button" class="btn btn-primary" data-dismiss="modal">Verstanden</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+
+</html>
