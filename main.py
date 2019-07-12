@@ -2,8 +2,11 @@ import sys
 import simplejson as json
 from flask import Flask, render_template, request
 import numpy as np
+np.random.seed(0)
 from agent import DQNAgent
 from environment import STATE_SHAPE, NUM_ACTIONS
+from train import train
+from policy import minimax, random_block
 
 app = Flask(__name__)
 
@@ -52,6 +55,7 @@ def main():
 		serverMode()
 	elif mode == 2:
 		print("\nYou picked the training mode!\n")
+		train(model_path='models/model.h5', batch_size=32, num_episodes=1000)
 
 if __name__ == '__main__':
 	main()
