@@ -12,7 +12,7 @@ RED = 1
 YELLOW = 2
 
 WIN_REWARD = 1
-LOST_REWARD = -1
+DEFEAT_REWARD = -1
 DRAW_REWARD = 0.25 # TODO try out
 
 def drop_piece(board, col, player):

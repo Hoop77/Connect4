@@ -1,0 +1,1 @@
+{"params": {"num_episodes": 100, "memory_size": 2000, "gamma": 0.95, "epsilon": 1.0, "epsilon_min": 0.01, "epsilon_decay": 0.995, "batch_size": 32, "update_interval": 100, "num_epochs": 5}, "stats": {"num_wins": 75, "num_defeats": 25, "num_draws": 0, "loss": {"steps": [], "values": []}, "accuracy": {"steps": [], "values": []}}}

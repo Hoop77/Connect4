@@ -35,7 +35,7 @@ class DQNAgent:
     def remember(self, state, action, reward, next_state, done):
         self.memory.append((state, action, reward, next_state, done))
 
-    def replay(self):
+    def replay(self, stats=None):
         if len(self.memory) < self.batch_size:
             return
 
@@ -64,6 +64,13 @@ class DQNAgent:
             i += 1
 
         self.policy_model.fit(states_batch, targets_batch, epochs=self.num_epochs, verbose=0)
+
+        if stats is not None and self.total_steps % 100 == 0:
+            result = self.policy_model.evaluate(states_batch, targets_batch, verbose=0)
+            stats['loss']['steps'].append(self.total_steps)
+            stats['loss']['values'].append(result[0])
+            stats['accuracy']['steps'].append(self.total_steps)
+            stats['accuracy']['values'].append(result[1])
 
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay

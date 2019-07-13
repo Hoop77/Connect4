@@ -30,7 +30,7 @@ class Environment:
 				opponent_action = self.opponent_policy(self.state)
 				board.drop_piece(self.state, opponent_action, self.opponent_color)
 				if board.check_for_winner(self.state, self.opponent_color):
-					reward = board.LOST_REWARD
+					reward = board.DEFEAT_REWARD
 					done = True
 				elif len(board.get_free_columns(self.state)) == 0: # draw
 					reward = board.DRAW_REWARD
@@ -39,7 +39,7 @@ class Environment:
 			opponent_action = self.opponent_policy(self.state)
 			board.drop_piece(self.state, opponent_action, self.opponent_color)
 			if board.check_for_winner(self.state, self.opponent_color):
-				reward = board.LOST_REWARD
+				reward = board.DEFEAT_REWARD
 				done = True
 			elif len(board.get_free_columns(self.state)) == 0: # draw
 				reward = board.DRAW_REWARD
