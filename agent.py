@@ -1,101 +1,107 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 from collections import deque
-from keras.models import Sequential
+from keras.models import Sequential, clone_model
 from keras.layers import Dense, Conv2D, LeakyReLU, Flatten
-from environment import STATE_SHAPE, NUM_ACTIONS, NUM_BOARD_COLS, NUM_BOARD_ROWS
-from board_utils import get_free_columns
+import board
 import math
+import random
+random.seed(0)
 
 class DQNAgent:
-    def __init__(self, weights=None):
-        self.memory = deque(maxlen=2000)
-        self.gamma = 0.95    # discount rate
-        self.epsilon = 1.0  # exploration rate
-        self.epsilon_min = 0.01
-        self.epsilon_decay = 0.995
-        self.alpha = 0.5
-        self.model = self.build_model()
-    
-    def predict(self, state):
-        state = state.reshape(1, NUM_BOARD_ROWS, NUM_BOARD_COLS, 1)
-        return self.model.predict(state)[0]
+    def __init__(self, weights=None, **params):
+        self.memory = deque(maxlen=params['memory_size'])
+        self.gamma = params['gamma']
+        self.epsilon = params['epsilon']
+        self.epsilon_min = params['epsilon_min']
+        self.epsilon_decay = params['epsilon_decay']
+        self.batch_size = params['batch_size']
+        self.policy_model = self.build_model()
+        self.target_model = None
+        self.update_target_model()
+        self.update_interval = params['update_interval']
+        self.total_steps = 0
+        self.num_epochs = params['num_epochs']
 
     def act(self, state):
         Q_state = self.predict(state)
-        avail_actions = get_free_columns(state) # assume sorted
-        avail_idx = 0
-        best_actions = []
-        Q_max = -math.inf
-        for action in range(NUM_ACTIONS):
-            if avail_idx >= len(avail_actions):
-                break
-            if action == avail_actions[avail_idx]:
-                Q = round(Q_state[action])
-                if Q > Q_max:
-                    Q_max = Q
-                    best_actions = [(action)]
-                elif Q == Q_max:
-                    best_actions.append(action)
-                avail_idx += 1
-        return np.random.choice(best_actions)
+        return board.choose_best_action(state, Q_state)
     
     def act_epsilon_greedy(self, state):
         if np.random.rand() <= self.epsilon:
-            return np.random.choice(get_free_columns(state))
+            return np.random.choice(board.get_free_columns(state))
         return self.act(state)
 
     def remember(self, state, action, reward, next_state, done):
         self.memory.append((state, action, reward, next_state, done))
 
-    def replay(self, batch_size):
-        minibatch = random.sample(self.memory, batch_size)
+    def replay(self):
+        if len(self.memory) < self.batch_size:
+            return
+
+        if self.total_steps % self.update_interval == 0:
+            self.update_target_model()
+
+        minibatch = random.sample(self.memory, self.batch_size)
+        states_batch, action_batch, reward_batch, next_states_batch, done_batch = map(np.array, zip(*minibatch))
+        states_batch = states_batch.reshape(len(states_batch), board.NUM_ROWS, board.NUM_COLS, 1)
+        next_states_batch = next_states_batch.reshape(len(next_states_batch), board.NUM_ROWS, board.NUM_COLS, 1)
+        targets_batch = np.zeros([self.batch_size, board.NUM_ACTIONS])
+        Q_state_batch = self.policy_model.predict(states_batch)
+        Q_next_state_batch = self.policy_model.predict(next_states_batch)
+        Q_next_state_target_batch = self.target_model.predict(next_states_batch)
+        i = 0
         for state, action, reward, next_state, done in minibatch:
-            Q_target_action = reward
-            Q_state = self.predict(state)
+            Q_state = Q_state_batch[i]
+            Q_next_state = Q_next_state_batch[i]
+            Q_next_state_target = Q_next_state_target_batch[i]
+            target = reward
             if not done:
-                Q_state_action = Q_state[action]
-                avail_actions = get_free_columns(state)
-                Q_next_state = self.predict(next_state)
-                Q_max_next_state = np.max([Q for a, Q in enumerate(Q_next_state) if a in avail_actions])
-                Q_target_action = Q_state_action + self.alpha * (reward + self.gamma * Q_max_next_state - Q_state_action)
-            Q_target = Q_state
-            Q_target[action] = Q_target_action
-            state = state.reshape(1, NUM_BOARD_ROWS, NUM_BOARD_COLS, 1)
-            Q_target = np.expand_dims(Q_target, axis=0)
-            self.model.fit(state, Q_target, epochs=1, verbose=1)
+                best_action = board.choose_best_action(next_state, Q_next_state)
+                target = reward if not done else reward + self.gamma * Q_next_state_target[best_action]
+            targets_batch[i] = Q_state
+            targets_batch[i][action] = target
+            i += 1
+
+        self.policy_model.fit(states_batch, targets_batch, epochs=self.num_epochs, verbose=0)
+
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
+        
+        self.total_steps += 1
 
     def load(self, path):
-        self.model.load_weights(path)
+        self.policy_model.load_weights(path)
 
     def save(self, path):
-        self.model.save_weights(path)
+        self.policy_model.save_weights(path)
 
     def build_model(self):
-        input_shape = (NUM_BOARD_ROWS, NUM_BOARD_COLS, 1)
+        input_shape = (board.NUM_ROWS, board.NUM_COLS, 1)
         model = Sequential()
-        model.add(Conv2D(20, (5, 5), padding='same', input_shape=input_shape))
-        model.add(LeakyReLU(alpha=0.3))
-        model.add(Conv2D(20, (4, 4), padding='same'))
-        model.add(LeakyReLU(alpha=0.3))
-        model.add(Conv2D(20, (4, 4), padding='same'))
+        model.add(Conv2D(30, (4, 4), padding='same', input_shape=input_shape))
         model.add(LeakyReLU(alpha=0.3))
         model.add(Conv2D(30, (4, 4), padding='same'))
         model.add(LeakyReLU(alpha=0.3))
         model.add(Conv2D(30, (4, 4), padding='same'))
         model.add(LeakyReLU(alpha=0.3))
-        model.add(Conv2D(30, (4, 4), padding='same'))
-        model.add(LeakyReLU(alpha=0.3))
-        model.add(Conv2D(30, (4, 4), padding='same'))
-        model.add(LeakyReLU(alpha=0.3))
-
         model.add(Flatten())
-        # TODO: try adding another dense layer
-        model.add(Dense(NUM_BOARD_COLS, activation='linear'))
+        model.add(Dense(50, activation='linear'))
+        model.add(Dense(board.NUM_COLS, activation='linear'))
 
-        model.compile(optimizer='adam', loss='mean_squared_error', metrics=['accuracy'])
+        self.compile_model(model)
 
         # model.summary()
         return model
+    
+    def update_target_model(self):
+        self.target_model = clone_model(self.policy_model)
+        self.compile_model(self.target_model)
+        self.target_model.set_weights(self.policy_model.get_weights())
+    
+    def compile_model(self, model):
+        model.compile(optimizer='adam', loss='mean_squared_error', metrics=['accuracy'])
+
+    def predict(self, state):
+        state = state.reshape(1, board.NUM_ROWS, board.NUM_COLS, 1)
+        return self.policy_model.predict(state)[0]

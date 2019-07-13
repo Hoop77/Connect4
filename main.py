@@ -4,20 +4,34 @@ from flask import Flask, render_template, request
 import numpy as np
 np.random.seed(0)
 from agent import DQNAgent
-from environment import STATE_SHAPE, NUM_ACTIONS
 from train import train
-from policy import minimax, random_block
+from policy import minimax, random_block, random_choice
 import math
 import tensorflow as tf
+import board
 
 app = Flask(__name__)
+
+params = {
+	'num_episodes': 1000,
+	'memory_size': 2000,
+	'gamma': 0.95,
+	'epsilon': 1.0,
+	'epsilon_min': 0.01,
+	'epsilon_decay': 0.995,
+	'batch_size': 32,
+	'update_interval': 100,
+	'num_epochs': 5,
+	#'opponent_policy': lambda state: minimax(state, 3, -math.inf, math.inf, True, RED)[0]
+	'opponent_policy': random_choice
+}
 
 session = tf.Session()
 graph = tf.get_default_graph()
 with graph.as_default():
 	with session.as_default():
-		agent = DQNAgent()
-		agent.load('models/model.h5')
+		agent = DQNAgent(**params)
+		#agent.load('models/model.h5') TODO: CHANGE !!!!!!!!!!
 
 def serverMode():
 	app.run(debug=True, use_reloader=False) #host='0.0.0.0',port=5000, 
@@ -31,6 +45,7 @@ def choose_column(request, board):
 		#explo = float(request.json['explo'])
 		with graph.as_default():
 			with session.as_default():
+				print(np.round(agent.predict(board), 3))
 				col = agent.act(board)
 	if request.json['mode'] == "mm":
 		depth = int(request.json['depth'])
@@ -64,7 +79,7 @@ def main():
 		serverMode()
 	elif mode == 2:
 		print("\nYou picked the training mode!\n")
-		train(model_path='models/model.h5', batch_size=32, num_episodes=1000)
+		train(model_path='models/model.h5', **params)
 
 if __name__ == '__main__':
 	main()

@@ -1,10 +1,22 @@
 import math
+import numpy as np
 
-BOARD_ROWS = 6
-BOARD_COLS = 7
-		
+NUM_ROWS = 6
+NUM_COLS = 7
+
+STATE_SHAPE = (NUM_ROWS, NUM_COLS)
+NUM_ACTIONS = NUM_COLS
+
+FREE = 0
+RED = 1
+YELLOW = 2
+
+WIN_REWARD = 1
+LOST_REWARD = -1
+DRAW_REWARD = 0.25 # TODO try out
+
 def drop_piece(board, col, player):
-	for row in range(0, BOARD_ROWS):
+	for row in range(0, NUM_ROWS):
 		if board[row][col] != 0:
 			board[row-1][col] = player
 			break
@@ -13,7 +25,7 @@ def drop_piece(board, col, player):
 	
 def get_free_columns(board):
 	free_cols = []
-	for col in range(0, BOARD_COLS):
+	for col in range(0, NUM_COLS):
 		if board[0][col] == 0:
 			free_cols.append(col)
 	return free_cols
@@ -116,4 +128,21 @@ def score_position(board, currPlayer):
 			score += evaluate_section(toEvaluate, currPlayer)
 
 	return score
-			
+
+def choose_best_action(board, values):
+	avail_actions = get_free_columns(board) # assume sorted
+	avail_idx = 0
+	best_actions = []
+	Q_max = -math.inf
+	for action in range(NUM_ACTIONS):
+		if avail_idx >= len(avail_actions):
+			break
+		if action == avail_actions[avail_idx]:
+			Q = round(values[action], 5)
+			if Q > Q_max:
+				Q_max = Q
+				best_actions = [(action)]
+			elif Q == Q_max:
+				best_actions.append(action)
+			avail_idx += 1
+	return np.random.choice(best_actions)
