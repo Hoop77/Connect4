@@ -12,8 +12,6 @@ def default_stats():
     }
 
 def save_stats(stats, params, path):
-    params = copy.deepcopy(params)
-    del params['opponent_policy']
     with open(path, 'w') as f:
         f.write(json.dumps({'params': params, 'stats': stats}))
 

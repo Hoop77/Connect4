@@ -13,15 +13,17 @@ import board
 app = Flask(__name__)
 
 params = {
-	'num_episodes': 1000,
-	'memory_size': 2000,
-	'gamma': 0.95,
-	'epsilon': 1.0,
-	'epsilon_min': 0.01,
-	'epsilon_decay': 0.995,
-	'batch_size': 32,
-	'update_interval': 100,
-	'num_epochs': 5,
+	'agent_params': {
+		'memory_size': 2000,
+		'gamma': 0.95,
+		'epsilon': 1.0,
+		'epsilon_min': 0.01,
+		'epsilon_decay': 0.995,
+		'batch_size': 32,
+		'update_interval': 100,
+		'num_epochs': 5
+	},
+	'num_episodes': 100,
 	#'opponent_policy': lambda state: minimax(state, 3, -math.inf, math.inf, True, RED)[0]
 	'opponent_policy': random_choice
 }
@@ -31,7 +33,7 @@ graph = tf.get_default_graph()
 with graph.as_default():
 	with session.as_default():
 		agent = DQNAgent(**params)
-		#agent.load('models/model.h5') TODO: CHANGE !!!!!!!!!!
+		agent.load('models/model.h5')
 
 def serverMode():
 	app.run(debug=True, use_reloader=False) #host='0.0.0.0',port=5000, 

@@ -9,19 +9,29 @@ import random
 random.seed(0)
 
 class DQNAgent:
-    def __init__(self, weights=None, **params):
-        self.memory = deque(maxlen=params['memory_size'])
-        self.gamma = params['gamma']
-        self.epsilon = params['epsilon']
-        self.epsilon_min = params['epsilon_min']
-        self.epsilon_decay = params['epsilon_decay']
-        self.batch_size = params['batch_size']
+    def __init__(self, 
+                 weights=None,
+                 memory_size=2000, 
+                 gamma=0.95,
+                 epsilon=1.0,
+                 epsilon_min=0.01,
+                 epsilon_decay=0.995,
+                 batch_size=32,
+                 update_interval=100,
+                 num_epochs=5,
+                 **kwargs):
+        self.memory = deque(maxlen=memory_size)
+        self.gamma = gamma
+        self.epsilon = epsilon
+        self.epsilon_min = epsilon_min
+        self.epsilon_decay = epsilon_decay
+        self.batch_size = batch_size
         self.policy_model = self.build_model()
         self.target_model = None
         self.update_target_model()
-        self.update_interval = params['update_interval']
+        self.update_interval = update_interval
         self.total_steps = 0
-        self.num_epochs = params['num_epochs']
+        self.num_epochs = num_epochs
 
     def act(self, state):
         Q_state = self.predict(state)
@@ -58,7 +68,7 @@ class DQNAgent:
             target = reward
             if not done:
                 best_action = board.choose_best_action(next_state, Q_next_state)
-                target = reward if not done else reward + self.gamma * Q_next_state_target[best_action]
+                target = reward + self.gamma * Q_next_state_target[best_action]
             targets_batch[i] = Q_state
             targets_batch[i][action] = target
             i += 1
