@@ -16,5 +16,5 @@ def train(model_path, batch_size=32, num_episodes=10000):
             next_state, reward, done = env.step(action)
             agent.remember(state, action, reward, next_state, done)
             if len(agent.memory) > batch_size:
-                agent.replay(env, batch_size)
+                agent.replay(batch_size)
     agent.save(model_path)

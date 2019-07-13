@@ -7,8 +7,17 @@ from agent import DQNAgent
 from environment import STATE_SHAPE, NUM_ACTIONS
 from train import train
 from policy import minimax, random_block
+import math
+import tensorflow as tf
 
 app = Flask(__name__)
+
+session = tf.Session()
+graph = tf.get_default_graph()
+with graph.as_default():
+	with session.as_default():
+		agent = DQNAgent()
+		agent.load('models/model.h5')
 
 def serverMode():
 	app.run(debug=True, use_reloader=False) #host='0.0.0.0',port=5000, 
@@ -20,14 +29,14 @@ def choose_column(request, board):
 	if request.json['mode'] == "ql":
 		#exp = int(request.json['exp'])
 		#explo = float(request.json['explo'])
-		agent = DQNAgent()
-		agent.load('') # TODO
-		col = agent.act(board)
+		with graph.as_default():
+			with session.as_default():
+				col = agent.act(board)
 	if request.json['mode'] == "mm":
 		depth = int(request.json['depth'])
 		col, minimax_score = minimax(board, depth, -math.inf, math.inf, True, currPlayer)
 	if request.json['mode'] == "rb":
-		col = randomBlock(board, currPlayer)
+		col, _ = random_block(board, currPlayer)
 		
 	return col
 
@@ -39,8 +48,8 @@ def index():
 def data():
 	gridData = request.json['grid']
 	board = np.array(gridData)
-	choice = choose_column(request, board)
-	responseData = {"column": choice}
+	col = choose_column(request, board)
+	responseData = {"column": int(col)}
 	jsonResponse = json.dumps(responseData)
 	
 	return jsonResponse

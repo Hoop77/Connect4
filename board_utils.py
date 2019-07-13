@@ -1,4 +1,3 @@
-import random
 import math
 
 BOARD_ROWS = 6

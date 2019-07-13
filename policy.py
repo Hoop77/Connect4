@@ -1,4 +1,5 @@
 from board_utils import *
+import numpy as np
 
 def minimax(board, depth, alpha, beta, maximizing_player, curr_player):
 	enemy = -1
@@ -20,7 +21,7 @@ def minimax(board, depth, alpha, beta, maximizing_player, curr_player):
 			return (None, score_position(board, curr_player))
 	if maximizing_player:
 		value = -math.inf
-		column = random.choice(free_cols)
+		column = np.random.choice(free_cols)
 		for col in free_cols:
 			temp_board = board.copy()
 			drop_piece(temp_board, col, curr_player)
@@ -35,7 +36,7 @@ def minimax(board, depth, alpha, beta, maximizing_player, curr_player):
 
 	else:
 		value = math.inf
-		column = random.choice(free_cols)
+		column = np.random.choice(free_cols)
 		for col in free_cols:
 			temp_board = board.copy()
 			drop_piece(temp_board, col, enemy)
@@ -68,4 +69,4 @@ def random_block(board, curr_player):
 		if check_for_winner(temp_board, enemy):
 			return free_cols[i]
 	
-	return random.choice(free_cols)
+	return np.random.choice(free_cols)

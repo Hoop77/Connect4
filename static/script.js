@@ -682,7 +682,7 @@ function getColumnFromServer() {
 	var response = xhr.response;
 
 	try {
-		jsonResponse = JSON.parse(response);
+		jsonResponse = JSON.parse("JSON: " + response);
 	  }
 	  catch(err) {
 		  console.log(err);

@@ -1,5 +1,4 @@
 import sys
-import random
 import numpy as np
 import math
 import simplejson as json
@@ -29,9 +28,6 @@ class Environment:
 
 	def get_state(self):
 		return self.board
-
-	def get_action_space(self):
-		return get_free_columns(self.board)
 
 	def step(self, action):
 		next_state = None

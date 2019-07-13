@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-import random
 import numpy as np
 from collections import deque
 from keras.models import Sequential
 from keras.layers import Dense, Conv2D, LeakyReLU, Flatten
 from environment import STATE_SHAPE, NUM_ACTIONS, NUM_BOARD_COLS, NUM_BOARD_ROWS
+from board_utils import get_free_columns
+import math
 
 class DQNAgent:
     def __init__(self, weights=None):
@@ -22,30 +23,41 @@ class DQNAgent:
 
     def act(self, state):
         Q_state = self.predict(state)
-        Q_state = np.round(Q_state)
-        actions = np.argwhere(Q_state == np.max(Q_state)) 
-        if len(actions) == 1:
-            return actions[0][0]
-        return actions[random.randrange(len(actions))][0]
+        avail_actions = get_free_columns(state) # assume sorted
+        avail_idx = 0
+        best_actions = []
+        Q_max = -math.inf
+        for action in range(NUM_ACTIONS):
+            if avail_idx >= len(avail_actions):
+                break
+            if action == avail_actions[avail_idx]:
+                Q = round(Q_state[action])
+                if Q > Q_max:
+                    Q_max = Q
+                    best_actions = [(action)]
+                elif Q == Q_max:
+                    best_actions.append(action)
+                avail_idx += 1
+        return np.random.choice(best_actions)
     
     def act_epsilon_greedy(self, state):
         if np.random.rand() <= self.epsilon:
-            return random.randrange(NUM_ACTIONS)
+            return np.random.choice(get_free_columns(state))
         return self.act(state)
 
     def remember(self, state, action, reward, next_state, done):
         self.memory.append((state, action, reward, next_state, done))
 
-    def replay(self, env, batch_size):
+    def replay(self, batch_size):
         minibatch = random.sample(self.memory, batch_size)
         for state, action, reward, next_state, done in minibatch:
             Q_target_action = reward
             Q_state = self.predict(state)
             if not done:
                 Q_state_action = Q_state[action]
-                avail_actions = env.get_action_space()
+                avail_actions = get_free_columns(state)
                 Q_next_state = self.predict(next_state)
-                Q_max_next_state = np.max([v for a, v in enumerate(Q_next_state) if a in avail_actions])
+                Q_max_next_state = np.max([Q for a, Q in enumerate(Q_next_state) if a in avail_actions])
                 Q_target_action = Q_state_action + self.alpha * (reward + self.gamma * Q_max_next_state - Q_state_action)
             Q_target = Q_state
             Q_target[action] = Q_target_action
