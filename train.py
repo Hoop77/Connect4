@@ -30,7 +30,7 @@ def train(model_path,
             elif reward == board.DEFEAT_REWARD:
                 stats['num_defeats'] += 1
             elif reward == board.DRAW_REWARD:
-                stats['num_draws'] += 1                
+                stats['num_draws'] += 1
 
     agent.save('models/model.h5')
     saved_params = {

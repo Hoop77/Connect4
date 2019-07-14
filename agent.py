@@ -96,19 +96,19 @@ class DQNAgent:
     def build_model(self):
         input_shape = (board.NUM_ROWS, board.NUM_COLS, 1)
         model = Sequential()
-        model.add(Conv2D(30, (4, 4), padding='same', input_shape=input_shape))
+        model.add(Conv2D(32, (4, 4), padding='same', input_shape=input_shape))
         model.add(LeakyReLU(alpha=0.3))
-        model.add(Conv2D(30, (4, 4), padding='same'))
+        model.add(Conv2D(32, (4, 4), padding='same'))
         model.add(LeakyReLU(alpha=0.3))
-        model.add(Conv2D(30, (4, 4), padding='same'))
+        model.add(Conv2D(32, (4, 4), padding='same'))
         model.add(LeakyReLU(alpha=0.3))
         model.add(Flatten())
-        model.add(Dense(50, activation='linear'))
+        model.add(Dense(50))
+        model.add(LeakyReLU(alpha=0.3))
         model.add(Dense(board.NUM_COLS, activation='linear'))
 
         self.compile_model(model)
 
-        # model.summary()
         return model
     
     def update_target_model(self):

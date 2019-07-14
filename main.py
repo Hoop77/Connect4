@@ -24,8 +24,8 @@ params = {
 		'num_epochs': 5
 	},
 	'num_episodes': 100,
-	#'opponent_policy': lambda state: minimax(state, 3, -math.inf, math.inf, True, RED)[0]
-	'opponent_policy': random_choice
+	'opponent_policy': lambda state: minimax(state, 3, -math.inf, math.inf, True, board.RED)[0]
+	#'opponent_policy': random_choice
 }
 
 session = tf.Session()
@@ -33,7 +33,6 @@ graph = tf.get_default_graph()
 with graph.as_default():
 	with session.as_default():
 		agent = DQNAgent(**params)
-		agent.load('models/model.h5')
 
 def serverMode():
 	app.run(debug=True, use_reloader=False) #host='0.0.0.0',port=5000, 
@@ -48,6 +47,7 @@ def choose_column(request, board):
 		with graph.as_default():
 			with session.as_default():
 				print(np.round(agent.predict(board), 3))
+				agent.load('models/model.h5')
 				col = agent.act(board)
 	if request.json['mode'] == "mm":
 		depth = int(request.json['depth'])
