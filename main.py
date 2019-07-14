@@ -23,7 +23,7 @@ params = {
 		'update_interval': 100,
 		'num_epochs': 5
 	},
-	'num_episodes': 100,
+	'num_episodes': 30000,
 	'opponent_policy': lambda state: minimax(state, 3, -math.inf, math.inf, True, board.RED)[0]
 	#'opponent_policy': random_choice
 }

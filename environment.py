@@ -21,36 +21,36 @@ class Environment:
 		if self.agent_first_turn:
 			board.drop_piece(self.state, action, self.agent_color)
 			if board.check_for_winner(self.state, self.agent_color):
-				reward = board.WIN_REWARD
+				reward = board.REWARD_WIN
 				done = True
 			elif len(board.get_free_columns(self.state)) == 0: # draw
-				reward = board.DRAW_REWARD
+				reward = board.REWARD_DRAW
 				done = True
 			else:
 				opponent_action = self.opponent_policy(self.state)
 				board.drop_piece(self.state, opponent_action, self.opponent_color)
 				if board.check_for_winner(self.state, self.opponent_color):
-					reward = board.DEFEAT_REWARD
+					reward = board.REWARD_DEFEAT
 					done = True
 				elif len(board.get_free_columns(self.state)) == 0: # draw
-					reward = board.DRAW_REWARD
+					reward = board.REWARD_DRAW
 					done = True
 		else:
 			opponent_action = self.opponent_policy(self.state)
 			board.drop_piece(self.state, opponent_action, self.opponent_color)
 			if board.check_for_winner(self.state, self.opponent_color):
-				reward = board.DEFEAT_REWARD
+				reward = board.REWARD_DEFEAT
 				done = True
 			elif len(board.get_free_columns(self.state)) == 0: # draw
-				reward = board.DRAW_REWARD
+				reward = board.REWARD_DRAW
 				done = True
 			else:
 				board.drop_piece(self.state, action, self.agent_color)
 				if board.check_for_winner(self.state, self.agent_color):
-					reward = board.WIN_REWARD
+					reward = board.REWARD_WIN
 					done = True
 				elif len(board.get_free_columns(self.state)) == 0: # draw
-					reward = board.DRAW_REWARD
+					reward = board.REWARD_DRAW
 					done = True
 
 		next_state = self.state.copy()
