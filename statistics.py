@@ -8,6 +8,7 @@ def default_stats():
         'num_defeats': 0,
         'num_draws': 0,
         'episode_lengths': [],
+        'epsilon': {'steps': [], 'values': []},
         'loss': {'steps': [], 'values': []},
         'accuracy': {'steps': [], 'values': []},
     }
@@ -23,7 +24,7 @@ def load_stats(path):
 
 def plot_stats(stats, data=None):
     if data is None:
-        fig, axes = plt.subplots(4)
+        fig, axes = plt.subplots(5)
     else:
         fig, axes = data[0], data[1]
         for ax in axes:
@@ -35,12 +36,18 @@ def plot_stats(stats, data=None):
     axes[1].set_xlabel('episode')
     axes[1].set_ylabel('episode length')
 
-    axes[2].plot(stats['loss']['steps'], stats['loss']['values'])
+    axes[2].plot(stats['epsilon']['steps'], stats['epsilon']['values'])
     axes[2].set_xlabel('training step')
-    axes[2].set_ylabel('loss')
+    axes[2].set_ylabel('epsilon')
+    axes[2].set_ylim(0, 1)
 
-    axes[3].plot(stats['accuracy']['steps'], stats['accuracy']['values'])
+    axes[3].plot(stats['loss']['steps'], stats['loss']['values'])
     axes[3].set_xlabel('training step')
-    axes[3].set_ylabel('accuracy')
+    axes[3].set_ylabel('loss')
+
+    axes[4].plot(stats['accuracy']['steps'], stats['accuracy']['values'])
+    axes[4].set_xlabel('training step')
+    axes[4].set_ylabel('accuracy')
+    axes[2].set_ylim(0, 1)
 
     return (fig, axes)

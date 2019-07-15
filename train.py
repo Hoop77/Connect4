@@ -15,7 +15,7 @@ def train(model_path='models/model.h5',
     stats = statistics.default_stats()
     plt_data = statistics.plot_stats(stats, data=None)
 
-    agent = DQNAgent(agent_params)
+    agent = DQNAgent(**agent_params)
 
     for episode in range(num_episodes):
         print('Episode {}/{}'.format(episode, num_episodes))

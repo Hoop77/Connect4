@@ -52,38 +52,35 @@ class DQNAgent:
         if self.total_steps % self.update_interval == 0:
             self.update_target_model()
 
-        minibatch = random.sample(self.memory, self.batch_size)
-        states_batch, action_batch, reward_batch, next_states_batch, done_batch = map(np.array, zip(*minibatch))
-        states_batch = states_batch.reshape(len(states_batch), board.NUM_ROWS, board.NUM_COLS, 1)
-        next_states_batch = next_states_batch.reshape(len(next_states_batch), board.NUM_ROWS, board.NUM_COLS, 1)
-        targets_batch = np.zeros([self.batch_size, board.NUM_ACTIONS])
-        Q_state_batch = self.policy_model.predict(states_batch)
-        Q_next_state_batch = self.policy_model.predict(next_states_batch)
-        Q_next_state_target_batch = self.target_model.predict(next_states_batch)
+        minibatch = np.array(random.sample(self.memory, self.batch_size))
+        state_batch = np.array([item[0] for item in minibatch]).reshape(self.batch_size, board.NUM_ROWS, board.NUM_COLS, 1)
+        next_state_batch = np.array([item[3] for item in minibatch]).reshape(self.batch_size, board.NUM_ROWS, board.NUM_COLS, 1)
+        target_batch = self.policy_model.predict(state_batch)
+        Q_next_state_batch = self.policy_model.predict(next_state_batch)
+        Q_next_state_target_batch = self.target_model.predict(next_state_batch)
         i = 0
         for state, action, reward, next_state, done in minibatch:
-            Q_state = Q_state_batch[i]
             Q_next_state = Q_next_state_batch[i]
             Q_next_state_target = Q_next_state_target_batch[i]
             target = reward
             if not done:
                 best_action = board.choose_best_action(next_state, Q_next_state)
                 target = reward + self.gamma * Q_next_state_target[best_action]
-            targets_batch[i] = Q_state
-            targets_batch[i][action] = target
+            target_batch[i][action] = target
             i += 1
 
-        self.policy_model.fit(states_batch, targets_batch, epochs=self.num_epochs, verbose=0)
+        self.policy_model.fit(state_batch, target_batch, epochs=self.num_epochs, verbose=0)
 
         if stats is not None and self.total_steps % 100 == 0:
-            result = self.policy_model.evaluate(states_batch, targets_batch, verbose=0)
+            result = self.policy_model.evaluate(state_batch, target_batch, verbose=0)
             stats['loss']['steps'].append(self.total_steps)
             stats['loss']['values'].append(result[0])
             stats['accuracy']['steps'].append(self.total_steps)
             stats['accuracy']['values'].append(result[1])
-
-        if self.epsilon > self.epsilon_min:
-            self.epsilon *= self.epsilon_decay
+        
+        stats['epsilon']['steps'].append(self.total_steps)
+        stats['epsilon']['values'].append(self.epsilon)
+        self.epsilon = max(self.epsilon * self.epsilon_decay, self.epsilon_min)
         
         self.total_steps += 1
 
