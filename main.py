@@ -18,14 +18,15 @@ params = {
 		'gamma': 0.95,
 		'epsilon': 1.0,
 		'epsilon_min': 0.1,
-		'epsilon_decay': 0.995,
+		'epsilon_decay': 0.999,
+		'alpha': 0.4,
 		'batch_size': 32,
 		'update_interval': 100,
 		'num_epochs': 5
 	},
 	'num_episodes': 30000,
-	'opponent_policy': lambda state: minimax(state, 3, -math.inf, math.inf, True, board.RED)[0]
-	#'opponent_policy': random_choice
+	#'opponent_policy': lambda state: minimax(state, 3, -math.inf, math.inf, True, board.YELLOW)[0]
+	'opponent_policy': random_choice
 }
 
 session = tf.Session()

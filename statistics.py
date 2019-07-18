@@ -9,8 +9,7 @@ def default_stats():
         'num_draws': 0,
         'episode_lengths': [],
         'epsilon': {'steps': [], 'values': []},
-        'loss': {'steps': [], 'values': []},
-        'accuracy': {'steps': [], 'values': []},
+        'loss': {'steps': [], 'values': []}
     }
 
 def save_stats(stats, params, path):
@@ -24,7 +23,7 @@ def load_stats(path):
 
 def plot_stats(stats, data=None):
     if data is None:
-        fig, axes = plt.subplots(5)
+        fig, axes = plt.subplots(4)
     else:
         fig, axes = data[0], data[1]
         for ax in axes:
@@ -44,10 +43,5 @@ def plot_stats(stats, data=None):
     axes[3].plot(stats['loss']['steps'], stats['loss']['values'])
     axes[3].set_xlabel('training step')
     axes[3].set_ylabel('loss')
-
-    axes[4].plot(stats['accuracy']['steps'], stats['accuracy']['values'])
-    axes[4].set_xlabel('training step')
-    axes[4].set_ylabel('accuracy')
-    axes[2].set_ylim(0, 1)
 
     return (fig, axes)
