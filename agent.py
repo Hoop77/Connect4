@@ -3,6 +3,7 @@ import numpy as np
 from collections import deque
 from keras.models import Sequential, clone_model
 from keras.layers import Dense, Conv2D, LeakyReLU, Flatten
+from keras.optimizers import Adam
 import board
 import math
 import random
@@ -16,18 +17,18 @@ class DQNAgent:
                  epsilon=1.0,
                  epsilon_min=0.01,
                  epsilon_decay=0.995,
-                 alpha=0.4,
                  batch_size=32,
-                 update_interval=100,
+                 update_interval=10,
                  num_epochs=5,
+                 learning_rate=0.001,
                  **kwargs):
         self.memory = deque(maxlen=memory_size)
         self.gamma = gamma
         self.epsilon = epsilon
         self.epsilon_min = epsilon_min
         self.epsilon_decay = epsilon_decay
-        self.alpha = alpha
         self.batch_size = batch_size
+        self.learning_rate = learning_rate
         self.policy_model = self.build_model()
         self.target_model = None
         self.update_target_model()
@@ -57,25 +58,22 @@ class DQNAgent:
         minibatch = random.sample(self.memory, self.batch_size)
         state_batch = np.array([item[0] for item in minibatch]).reshape(self.batch_size, board.NUM_ROWS, board.NUM_COLS, 1)
         next_state_batch = np.array([item[3] for item in minibatch]).reshape(self.batch_size, board.NUM_ROWS, board.NUM_COLS, 1)
-        Q_state_batch = self.policy_model.predict(state_batch)
-        target_batch = Q_state_batch.copy()
+        target_batch = self.policy_model.predict(state_batch)
         Q_next_state_policy_batch = self.policy_model.predict(next_state_batch)
         Q_next_state_target_batch = self.target_model.predict(next_state_batch)
         i = 0
         for state, action, reward, next_state, done in minibatch:
-            Q_state = Q_state_batch[i][action]
             Q_next_state_policy = Q_next_state_policy_batch[i]
             Q_next_state_target = Q_next_state_target_batch[i]
-            target = Q_state + self.alpha * (reward - Q_state)
+            target = reward
             if not done:
                 best_action = board.choose_best_action(next_state, Q_next_state_policy)
-                target = Q_state + self.alpha * (reward + self.gamma * Q_next_state_target[best_action] - Q_state)
+                target = reward + self.gamma * Q_next_state_target[best_action]
             target_batch[i][action] = target
             i += 1
 
         history = self.policy_model.fit(state_batch, target_batch, epochs=self.num_epochs, verbose=0)
 
-        #if stats is not None and self.total_steps % 100 == 0:
         stats['loss']['steps'].append(self.total_steps)
         stats['loss']['values'].append(np.sqrt(history.history['loss'][-1]))
         
@@ -99,8 +97,6 @@ class DQNAgent:
         model.add(LeakyReLU(alpha=0.3))
         model.add(Conv2D(32, (4, 4), padding='same'))
         model.add(LeakyReLU(alpha=0.3))
-        model.add(Conv2D(32, (4, 4), padding='same'))
-        model.add(LeakyReLU(alpha=0.3))
         model.add(Flatten())
         model.add(Dense(50))
         model.add(LeakyReLU(alpha=0.3))
@@ -116,7 +112,7 @@ class DQNAgent:
         self.target_model.set_weights(self.policy_model.get_weights())
     
     def compile_model(self, model):
-        model.compile(optimizer='adam', loss='mean_squared_error')
+        model.compile(optimizer=Adam(lr=self.learning_rate), loss='mean_squared_error')
 
     def predict(self, state):
         state = state.reshape(1, board.NUM_ROWS, board.NUM_COLS, 1)

@@ -16,42 +16,33 @@ class Environment:
 		return self.state
 
 	def step(self, action):
-		reward = 0
-		done = False
+		event = board.EVENT_IN_GAME
 		if self.agent_first_turn:
 			board.drop_piece(self.state, action, self.agent_color)
 			if board.check_for_winner(self.state, self.agent_color):
-				reward = board.REWARD_WIN
-				done = True
+				event = board.EVENT_WIN
 			elif len(board.get_free_columns(self.state)) == 0: # draw
-				reward = board.REWARD_DRAW
-				done = True
+				event = board.EVENT_DRAW
 			else:
 				opponent_action = self.opponent_policy(self.state)
 				board.drop_piece(self.state, opponent_action, self.opponent_color)
 				if board.check_for_winner(self.state, self.opponent_color):
-					reward = board.REWARD_DEFEAT
-					done = True
+					event = board.EVENT_DEFEAT
 				elif len(board.get_free_columns(self.state)) == 0: # draw
-					reward = board.REWARD_DRAW
-					done = True
+					event = board.EVENT_DRAW
 		else:
 			opponent_action = self.opponent_policy(self.state)
 			board.drop_piece(self.state, opponent_action, self.opponent_color)
 			if board.check_for_winner(self.state, self.opponent_color):
-				reward = board.REWARD_DEFEAT
-				done = True
+				event = board.EVENT_DEFEAT
 			elif len(board.get_free_columns(self.state)) == 0: # draw
-				reward = board.REWARD_DRAW
-				done = True
+				event = board.EVENT_DRAW
 			else:
 				board.drop_piece(self.state, action, self.agent_color)
 				if board.check_for_winner(self.state, self.agent_color):
-					reward = board.REWARD_WIN
-					done = True
+					event = board.EVENT_WIN
 				elif len(board.get_free_columns(self.state)) == 0: # draw
-					reward = board.REWARD_DRAW
-					done = True
+					event = board.EVENT_DRAW
 
 		next_state = self.state.copy()
-		return next_state, reward, done
+		return next_state, board.REWARDS[event], event

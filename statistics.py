@@ -1,12 +1,11 @@
 from matplotlib import pyplot as plt
 import json
 import copy
+import board
 
 def default_stats():
     return {
-        'num_wins': 0,
-        'num_defeats': 0,
-        'num_draws': 0,
+        'episode_results': [],
         'episode_lengths': [],
         'epsilon': {'steps': [], 'values': []},
         'loss': {'steps': [], 'values': []}
@@ -29,7 +28,12 @@ def plot_stats(stats, data=None):
         for ax in axes:
             ax.clear()
 
-    axes[0].pie([stats['num_wins'], stats['num_defeats'], stats['num_draws']], labels=['win', 'defeat', 'draw'])
+    episode_results = stats['episode_results'][-100:]
+    num_wins = episode_results.count(board.EVENT_WIN)
+    num_defeats = episode_results.count(board.EVENT_DEFEAT)
+    num_draws = episode_results.count(board.EVENT_DRAW)
+
+    axes[0].pie([num_wins, num_defeats, num_draws], labels=['win', 'defeat', 'draw'])
     
     axes[1].plot(stats['episode_lengths'])
     axes[1].set_xlabel('episode')

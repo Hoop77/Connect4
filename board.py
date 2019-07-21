@@ -11,9 +11,17 @@ FREE = 0
 RED = 1
 YELLOW = 2
 
-REWARD_WIN = 1
-REWARD_DEFEAT = -1
-REWARD_DRAW = 0.25 # TODO try out
+EVENT_IN_GAME = 0
+EVENT_WIN = 1
+EVENT_DEFEAT = 2
+EVENT_DRAW = 3
+
+REWARDS = {
+	EVENT_IN_GAME: 0.0,
+	EVENT_WIN: 1.0,
+	EVENT_DEFEAT: 0.0,
+	EVENT_DRAW: 0.5
+}
 
 def drop_piece(board, col, player):
 	for row in range(0, NUM_ROWS):

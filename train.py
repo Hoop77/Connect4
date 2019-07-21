@@ -25,20 +25,17 @@ def train(model_path='models/model.h5',
         while not done:
             state = env.get_state()
             action = agent.act_epsilon_greedy(state)
-            next_state, reward, done = env.step(action)
+            next_state, reward, event = env.step(action)
+            done = event != board.EVENT_IN_GAME
             agent.remember(state, action, reward, next_state, done)
             agent.replay(stats=stats)
 
-            if reward == board.REWARD_WIN:
-                print("Won Game!")
-                stats['num_wins'] += 1
-            elif reward == board.REWARD_DEFEAT:
-                stats['num_defeats'] += 1
-            elif reward == board.REWARD_DRAW:
-                stats['num_draws'] += 1
+            if event == board.EVENT_WIN:
+                print('Won Game!')
             
             episode_length += 1
-
+        
+        stats['episode_results'].append(event)
         stats['episode_lengths'].append(episode_length)
 
         plt_data = statistics.plot_stats(stats, data=plt_data)

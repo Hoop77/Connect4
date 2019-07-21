@@ -15,14 +15,14 @@ app = Flask(__name__)
 params = {
 	'agent_params': {
 		'memory_size': 2000,
-		'gamma': 0.95,
+		'gamma': 0.9,
 		'epsilon': 1.0,
 		'epsilon_min': 0.1,
 		'epsilon_decay': 0.999,
-		'alpha': 0.4,
 		'batch_size': 32,
 		'update_interval': 100,
-		'num_epochs': 5
+		'num_epochs': 5,
+		'learning_rate': 0.001
 	},
 	'num_episodes': 30000,
 	#'opponent_policy': lambda state: minimax(state, 3, -math.inf, math.inf, True, board.YELLOW)[0]
