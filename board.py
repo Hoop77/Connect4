@@ -8,35 +8,28 @@ STATE_SHAPE = (NUM_ROWS, NUM_COLS)
 NUM_ACTIONS = NUM_COLS
 
 FREE = 0
-RED = 1
-YELLOW = 2
+PLAYER_1 = 1
+PLAYER_2 = -1
 
-EVENT_IN_GAME = 0
-EVENT_WIN = 1
-EVENT_DEFEAT = 2
-EVENT_DRAW = 3
-
-REWARDS = {
-	EVENT_IN_GAME: 0.0,
-	EVENT_WIN: 1.0,
-	EVENT_DEFEAT: 0.0,
-	EVENT_DRAW: 0.5
-}
+OUTCOME_NONE = 0
+OUTCOME_WIN = 1
+OUTCOME_DEFEAT = 2
+OUTCOME_DRAW = 3
 
 def drop_piece(board, col, player):
-	for row in range(0, NUM_ROWS):
-		if board[row][col] != 0:
-			board[row-1][col] = player
-			break
-		if row == 5 and board[row][col] == 0:
+	board = board.copy()
+	drop_piece_inplace(board, col, player)
+	return board
+
+def drop_piece_inplace(board, col, player):
+	assert(board[0][col] == FREE)
+	for row in reversed(range(NUM_ROWS)):
+		if board[row][col] == FREE:
 			board[row][col] = player
-	
+			break
+
 def get_free_columns(board):
-	free_cols = []
-	for col in range(0, NUM_COLS):
-		if board[0][col] == 0:
-			free_cols.append(col)
-	return free_cols
+	return [col for col in range(NUM_COLS) if board[0][col] == 0]
 	
 def check_for_winner(board, player):
 	# check horizontal spaces
@@ -154,3 +147,10 @@ def choose_best_action(board, values):
 				best_actions.append(action)
 			avail_idx += 1
 	return np.random.choice(best_actions)
+
+def get_outcome_after_move(board, player):
+	if check_for_winner(board, player):
+		return OUTCOME_WIN
+	elif len(get_free_columns(board)) == 0:
+		return OUTCOME_DRAW
+	return OUTCOME_NONE

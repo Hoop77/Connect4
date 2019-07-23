@@ -3,7 +3,7 @@ import simplejson as json
 from flask import Flask, render_template, request
 import numpy as np
 np.random.seed(0)
-from agent import DQNAgent
+from agent import Agent
 from train import train
 from policy import minimax, random_block, random_choice
 import math
@@ -12,49 +12,53 @@ import board
 
 app = Flask(__name__)
 
-params = {
-	'agent_params': {
+args = {
+	'agent_args': {
 		'memory_size': 2000,
-		'gamma': 0.9,
-		'epsilon': 1.0,
-		'epsilon_min': 0.1,
-		'epsilon_decay': 0.999,
 		'batch_size': 32,
 		'update_interval': 100,
 		'num_epochs': 5,
 		'learning_rate': 0.001
 	},
-	'num_episodes': 30000,
-	#'opponent_policy': lambda state: minimax(state, 3, -math.inf, math.inf, True, board.YELLOW)[0]
-	'opponent_policy': random_choice
+	'self_play_args': {
+		'gamma': 0.9,
+		'epsilon': 0.2
+	},
+	'num_episodes': 30000
 }
 
 session = tf.Session()
 graph = tf.get_default_graph()
 with graph.as_default():
 	with session.as_default():
-		agent = DQNAgent(**params)
+		agent = Agent(**args)
 
 def serverMode():
 	app.run(debug=True, use_reloader=False) #host='0.0.0.0',port=5000, 
 
 def choose_column(request, board):
 	col = -1	
-	currPlayer = request.json['player']
+	player = request.json['player']
+	# TODO: change this in front-end
+	if player == 2: 
+		player = -1
+	for row in range(len(board)):
+		for col in range(len(board[row])):
+			if board[row][col] == 2:
+				board[row][col] = -1
 	
 	if request.json['mode'] == "ql":
 		#exp = int(request.json['exp'])
 		#explo = float(request.json['explo'])
 		with graph.as_default():
 			with session.as_default():
-				print(np.round(agent.predict(board), 3))
-				agent.load('models/model.h5')
-				col = agent.act(board)
+				agent.load('models/model_self_play.h5')
+				col = agent.act(board, player)
 	if request.json['mode'] == "mm":
 		depth = int(request.json['depth'])
-		col, minimax_score = minimax(board, depth, -math.inf, math.inf, True, currPlayer)
+		col, minimax_score = minimax(board, depth, -math.inf, math.inf, True, player)
 	if request.json['mode'] == "rb":
-		col, _ = random_block(board, currPlayer)
+		col, _ = random_block(board, player)
 		
 	return col
 
@@ -82,7 +86,7 @@ def main():
 		serverMode()
 	elif mode == 2:
 		print("\nYou picked the training mode!\n")
-		train(model_path='models/model.h5', **params)
+		train(model_path='models/model.h5', **args)
 
 if __name__ == '__main__':
 	main()

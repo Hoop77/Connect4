@@ -5,7 +5,7 @@ import board
 
 def default_stats():
     return {
-        'episode_results': [],
+        'episode_outcomes': [],
         'episode_lengths': [],
         'epsilon': {'steps': [], 'values': []},
         'loss': {'steps': [], 'values': []}
@@ -28,12 +28,12 @@ def plot_stats(stats, data=None):
         for ax in axes:
             ax.clear()
 
-    episode_results = stats['episode_results'][-100:]
-    num_wins = episode_results.count(board.EVENT_WIN)
-    num_defeats = episode_results.count(board.EVENT_DEFEAT)
-    num_draws = episode_results.count(board.EVENT_DRAW)
+    episode_results = stats['episode_outcomes'][-100:]
+    num_wins_player_1 = episode_results.count(board.PLAYER_1)
+    num_wins_player_2 = episode_results.count(board.PLAYER_2)
+    num_draws = episode_results.count(0)
 
-    axes[0].pie([num_wins, num_defeats, num_draws], labels=['win', 'defeat', 'draw'])
+    axes[0].pie([num_wins_player_1, num_wins_player_2, num_draws], labels=['wins player 1', 'wins player 2', 'draws'])
     
     axes[1].plot(stats['episode_lengths'])
     axes[1].set_xlabel('episode')

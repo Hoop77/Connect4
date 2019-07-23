@@ -1,7 +1,7 @@
 from environment import Environment
 import board
 import numpy as np
-from agent import DQNAgent
+from agent import Agent
 
 def test_step():
     env = Environment(opponent_policy=lambda s: 0)
@@ -13,7 +13,7 @@ def test_step():
         print('FAIL')
 
 def test_target_model():
-    agent = DQNAgent()
+    agent = Agent()
     agent.load('models/model.h5')
     state = np.zeros([6, 7])
     state[5][3] = 1
