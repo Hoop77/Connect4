@@ -54,15 +54,15 @@ def self_play(agent,
     player = board.PLAYER_1
     outcome = board.OUTCOME_NONE
     while outcome == board.OUTCOME_NONE:
-        is_random_move = np.random.rand() <= epsilon
-        if is_random_move:
-            next_state = random_move(state, player)
+        random_move = np.random.rand() <= epsilon
+        if random_move:
+            next_state = make_random_move(state, player)
             outcome = board.get_outcome_after_move(next_state, player)
             if outcome == board.OUTCOME_WIN:
                 target = REWARD_TABLE[outcome]
                 agent.train(state, target, stats=stats)
         else:
-            next_state, target = choose_move(agent, state, player, gamma)
+            next_state, target = make_best_move(agent, state, player, gamma)
             agent.train(state, target, stats=stats)
 
         outcome = board.get_outcome_after_move(next_state, player)
@@ -73,18 +73,18 @@ def self_play(agent,
     stats['episode_outcomes'].append(-player)
     stats['episode_lengths'].append(episode_length)
 
-def random_move(state, player):
+def make_random_move(state, player):
     col = np.random.choice(board.get_free_columns(state))
     return board.drop_piece(state, col, player)
 
-def choose_move(agent, state, player, gamma):
+def make_best_move(agent, state, player, gamma):
     cols = board.get_free_columns(state)
     next_states = [board.drop_piece(state, col, player) for col in cols]
     outcomes = [board.get_outcome_after_move(next_state, player) for next_state in next_states]
     rewards = np.array([REWARD_TABLE[outcome] for outcome in outcomes])
     not_done = np.array([outcome == board.OUTCOME_NONE for outcome in outcomes]).astype(np.float32)
     values = np.array([agent.evaluate(next_state, use_target_model=True) for next_state in next_states])
-    targets = rewards + not_done * gamma * values # TODO fixit
+    targets = rewards + not_done * gamma * values
     targets = np.round(targets, 5)
     targets = player * targets
     target_max = np.max(targets)
