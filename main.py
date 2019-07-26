@@ -17,7 +17,7 @@ args = {
 		'memory_size': 2000,
 		'batch_size': 32,
 		'update_interval': 100,
-		'num_epochs': 5,
+		'num_epochs': 1,
 		'learning_rate': 0.001
 	},
 	'self_play_args': {
@@ -55,7 +55,7 @@ def choose_column(request, board):
 		with graph.as_default():
 			with session.as_default():
 				agent.load('models/model.h5')
-				col = agent.act(board, player)
+				col, _, _ = agent.act(board, player)
 	if request.json['mode'] == "mm":
 		depth = int(request.json['depth'])
 		col, minimax_score = minimax(board, depth, -math.inf, math.inf, True, player)

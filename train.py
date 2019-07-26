@@ -6,12 +6,13 @@ import math
 import board
 import statistics
 import time
+import datetime
 from matplotlib import pyplot as plt
 
 REWARD_TABLE = {
 	board.OUTCOME_NONE: 0.0,
 	board.OUTCOME_WIN: 1.0,
-	board.OUTCOME_DEFEAT: 0.0,
+	board.OUTCOME_DEFEAT: -1.0,
 	board.OUTCOME_DRAW: 0.5
 }
 
@@ -48,7 +49,7 @@ def train(model_path='models/model.h5',
             # }
             # statistics.save_stats(stats, saved_args, stats_filename)
 
-def self_play(agent, 
+def self_play(agent,
               epsilon=0.1,
               gamma=0.9,
               stats=None):
@@ -86,11 +87,10 @@ def make_best_move(agent, state, player, gamma):
     outcomes = [board.get_outcome_after_move(next_state, player) for next_state in next_states]
     rewards = np.array([REWARD_TABLE[outcome] for outcome in outcomes])
     not_done = np.array([outcome == board.OUTCOME_NONE for outcome in outcomes]).astype(np.float32)
-    values = np.array([agent.evaluate(next_state, use_target_model=True) for next_state in next_states])
+    values = np.squeeze(agent.target_model.predict(np.expand_dims(next_states, axis=3)))
     targets = rewards + not_done * gamma * values
     targets = player * targets
-    target_max = np.max(targets)
-    best_next_states = [next_states[i] for i, target in enumerate(targets) if round(target, 2) == round(target_max, 2)]
-    idx = np.random.choice(len(best_next_states))
-    best_next_state = best_next_states[idx]
+    target_max_idx = np.argmax(targets)
+    target_max = targets[target_max_idx]
+    best_next_state = next_states[target_max_idx]
     return best_next_state, player * target_max

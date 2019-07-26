@@ -25,15 +25,13 @@ class Agent:
         self.num_epochs = num_epochs
 
     def act(self, state, player):
-        cols = board.get_free_columns(state)
-        assert(len(cols) > 0)
-        next_states = np.array([board.drop_piece(state, col, player) for col in cols])
-        next_states = next_states.reshape(len(next_states), board.NUM_ROWS, board.NUM_COLS, 1)
+        free_cols = board.get_free_columns(state)
+        assert(len(free_cols) > 0)
+        next_states = np.array([board.drop_piece(state, col, player) for col in free_cols])
+        next_states = np.expand_dims(next_states, axis=3)
         values = self.model.predict(next_states).reshape(len(next_states))
-        values = player * np.round(values, 2)
-        max_value = np.max(values)
-        best_cols = [cols[i] for i, value in enumerate(values) if value == max_value]
-        return np.random.choice(best_cols)
+        best_col = free_cols[np.argmax(values)]
+        return best_col, free_cols, values
 
     def evaluate(self, state, use_target_model=True):
         state = state.reshape(1, board.NUM_ROWS, board.NUM_COLS, 1)
@@ -66,6 +64,12 @@ class Agent:
         input_shape = (board.NUM_ROWS, board.NUM_COLS, 1)
         model = Sequential()
         model.add(Conv2D(32, (4, 4), padding='same', input_shape=input_shape))
+        model.add(LeakyReLU(alpha=0.3))
+        model.add(Conv2D(32, (4, 4), padding='same'))
+        model.add(LeakyReLU(alpha=0.3))
+        model.add(Conv2D(32, (4, 4), padding='same'))
+        model.add(LeakyReLU(alpha=0.3))
+        model.add(Conv2D(32, (4, 4), padding='same'))
         model.add(LeakyReLU(alpha=0.3))
         model.add(Conv2D(32, (4, 4), padding='same'))
         model.add(LeakyReLU(alpha=0.3))
