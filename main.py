@@ -24,7 +24,9 @@ args = {
 		'gamma': 0.9,
 		'epsilon': 0.2
 	},
-	'num_episodes': 30000
+	'resume_training': True,
+	'num_episodes': 1000000,
+	'life_plot': False
 }
 
 session = tf.Session()
@@ -52,7 +54,7 @@ def choose_column(request, board):
 		#explo = float(request.json['explo'])
 		with graph.as_default():
 			with session.as_default():
-				agent.load('models/model_self_play.h5')
+				agent.load('models/model.h5')
 				col = agent.act(board, player)
 	if request.json['mode'] == "mm":
 		depth = int(request.json['depth'])

@@ -1,3 +1,5 @@
+import numpy as np
+np.random.seed(0)
 from agent import Agent
 from policy import minimax, random_choice
 import math
@@ -5,7 +7,6 @@ import board
 import statistics
 import time
 from matplotlib import pyplot as plt
-import numpy as np
 
 REWARD_TABLE = {
 	board.OUTCOME_NONE: 0.0,
@@ -15,35 +16,37 @@ REWARD_TABLE = {
 }
 
 def train(model_path='models/model.h5', 
-          opponent_policy=random_choice,
+          resume_training=False,
           num_episodes=1000,
+          life_plot=True,
           self_play_args={},
           agent_args={},
           **kwargs):
     stats = statistics.default_stats()
+    stats_filename = "stats/stats-{}.json".format(time.strftime("%Y%m%d-%H%M%S"))
     plt_data = statistics.plot_stats(stats, data=None)
 
     agent = Agent(**agent_args)
+    if resume_training:
+        agent.load(model_path)
 
     for episode in range(num_episodes):
         print('Episode {}/{}'.format(episode, num_episodes))       
 
         self_play(agent, stats=stats, **self_play_args)
 
-        plt_data = statistics.plot_stats(stats, data=plt_data)
-        plt.pause(0.0001)
+        if life_plot:
+            plt_data = statistics.plot_stats(stats, data=plt_data)
+            plt.pause(0.0001)
 
         if episode % 100 == 0:
             agent.save(model_path)
-
-    agent.save(model_path)
-    saved_args = {
-        'agent_args': agent_args,
-        'num_episodes': num_episodes
-    }
-    statistics.save_stats(stats, saved_args, "stats/stats-{}.json".format(time.strftime("%Y%m%d-%H%M%S")))
-    statistics.plot_stats(stats, data=plt_data)
-    plt.show()
+            # TODO: fixit
+            # saved_args = {
+            #     'agent_args': agent_args,
+            #     'num_episodes': num_episodes
+            # }
+            # statistics.save_stats(stats, saved_args, stats_filename)
 
 def self_play(agent, 
               epsilon=0.1,
@@ -85,10 +88,9 @@ def make_best_move(agent, state, player, gamma):
     not_done = np.array([outcome == board.OUTCOME_NONE for outcome in outcomes]).astype(np.float32)
     values = np.array([agent.evaluate(next_state, use_target_model=True) for next_state in next_states])
     targets = rewards + not_done * gamma * values
-    targets = np.round(targets, 5)
     targets = player * targets
     target_max = np.max(targets)
-    best_next_states = [next_states[i] for i, target in enumerate(targets) if target == target_max]
+    best_next_states = [next_states[i] for i, target in enumerate(targets) if round(target, 2) == round(target_max, 2)]
     idx = np.random.choice(len(best_next_states))
     best_next_state = best_next_states[idx]
     return best_next_state, player * target_max

@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-from collections import deque
+np.random.seed(0)
 from keras.models import Sequential, clone_model
 from keras.layers import Dense, Conv2D, LeakyReLU, Flatten
 from keras.optimizers import Adam
 import board
 import math
-import random
-random.seed(0)
 
 class Agent:
     def __init__(self, 
@@ -32,7 +30,7 @@ class Agent:
         next_states = np.array([board.drop_piece(state, col, player) for col in cols])
         next_states = next_states.reshape(len(next_states), board.NUM_ROWS, board.NUM_COLS, 1)
         values = self.model.predict(next_states).reshape(len(next_states))
-        values = player * np.round(values, 5)
+        values = player * np.round(values, 2)
         max_value = np.max(values)
         best_cols = [cols[i] for i, value in enumerate(values) if value == max_value]
         return np.random.choice(best_cols)
