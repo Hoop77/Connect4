@@ -87,7 +87,7 @@ def make_best_move(agent, state, player, gamma):
     outcomes = [board.get_outcome_after_move(next_state, player) for next_state in next_states]
     rewards = np.array([REWARD_TABLE[outcome] for outcome in outcomes])
     not_done = np.array([outcome == board.OUTCOME_NONE for outcome in outcomes]).astype(np.float32)
-    values = np.squeeze(agent.target_model.predict(np.expand_dims(next_states, axis=3)))
+    values = np.squeeze(agent.model.predict(np.expand_dims(next_states, axis=3)))
     targets = rewards + not_done * gamma * values
     targets = player * targets
     target_max_idx = np.argmax(targets)

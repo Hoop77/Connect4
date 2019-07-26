@@ -16,7 +16,6 @@ args = {
 	'agent_args': {
 		'memory_size': 2000,
 		'batch_size': 32,
-		'update_interval': 100,
 		'num_epochs': 1,
 		'learning_rate': 0.001
 	},

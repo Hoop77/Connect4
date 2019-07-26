@@ -11,16 +11,12 @@ class Agent:
     def __init__(self, 
                  weights=None,
                  gamma=0.95,
-                 update_interval=10,
                  num_epochs=5,
                  learning_rate=0.001,
                  **kwargs):
         self.gamma = gamma
         self.learning_rate = learning_rate
         self.model = self.build_model()
-        self.target_model = None
-        self.update_target_model()
-        self.update_interval = update_interval
         self.total_steps = 0
         self.num_epochs = num_epochs
 
@@ -35,13 +31,9 @@ class Agent:
 
     def evaluate(self, state, use_target_model=True):
         state = state.reshape(1, board.NUM_ROWS, board.NUM_COLS, 1)
-        return self.target_model.predict(state)[0][0] if use_target_model \
-            else self.model.predict(state)[0][0]
+        return self.model.predict(state)[0][0]
 
     def train(self, state, target, stats=None):
-        if self.total_steps % self.update_interval == 0:
-            self.update_target_model()
-
         history = self.model.fit(
             x=state.reshape(1, board.NUM_ROWS, board.NUM_COLS, 1),
             y=np.array([[target]]),
@@ -55,7 +47,6 @@ class Agent:
 
     def load(self, path):
         self.model.load_weights(path)
-        self.update_target_model()
 
     def save(self, path):
         self.model.save_weights(path)
@@ -81,11 +72,6 @@ class Agent:
         self.compile_model(model)
 
         return model
-    
-    def update_target_model(self):
-        self.target_model = clone_model(self.model)
-        self.compile_model(self.target_model)
-        self.target_model.set_weights(self.model.get_weights())
     
     def compile_model(self, model):
         model.compile(optimizer=Adam(lr=self.learning_rate), loss='mean_squared_error')
