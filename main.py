@@ -14,13 +14,11 @@ app = Flask(__name__)
 
 args = {
 	'agent_args': {
-		'memory_size': 2000,
-		'batch_size': 32,
 		'num_epochs': 1,
-		'learning_rate': 0.001
+		'learning_rate': 0.01
 	},
 	'self_play_args': {
-		'gamma': 0.9,
+		'gamma': 0.95,
 		'epsilon': 0.2
 	},
 	'resume_training': True,

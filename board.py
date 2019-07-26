@@ -150,7 +150,7 @@ def choose_best_action(board, values):
 
 def get_outcome_after_move(board, player):
 	if check_for_winner(board, player):
-		return OUTCOME_WIN
+		return OUTCOME_WIN if player == PLAYER_1 else OUTCOME_DEFEAT
 	elif len(get_free_columns(board)) == 0:
 		return OUTCOME_DRAW
 	return OUTCOME_NONE

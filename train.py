@@ -62,7 +62,7 @@ def self_play(agent,
         if random_move:
             next_state = make_random_move(state, player)
             outcome = board.get_outcome_after_move(next_state, player)
-            if outcome == board.OUTCOME_WIN:
+            if outcome == board.OUTCOME_WIN or outcome == board.OUTCOME_DEFEAT:
                 target = REWARD_TABLE[outcome]
                 agent.train(state, target, stats=stats)
         else:

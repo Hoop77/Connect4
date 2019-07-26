@@ -124,7 +124,7 @@ function renderGrid() {
                 if (player1pickedSet && player2pickedSet) {
                     setTimeout(function () {
                         checkAiTurn();
-                    }, 5000);
+                    }, 500);
                 } else {
                     checkAiTurn();
                 }
@@ -197,7 +197,7 @@ function checkAiTurn() {
 			document.getElementById("gameInfo").innerHTML = "<h4>Fehler!</h4>";
 			setTimeout(function () {
 				document.getElementById("gameInfo").innerHTML = "";
-			}, 5000);
+			}, 500);
 		} else {
 			var row = getNextRow(resultCol);
 			var coords = getPos(document.getElementById("svgGrid"));

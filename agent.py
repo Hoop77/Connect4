@@ -3,13 +3,12 @@ import numpy as np
 np.random.seed(0)
 from keras.models import Sequential, clone_model
 from keras.layers import Dense, Conv2D, LeakyReLU, Flatten
-from keras.optimizers import Adam
+from keras.optimizers import Adam, SGD
 import board
 import math
 
 class Agent:
-    def __init__(self, 
-                 weights=None,
+    def __init__(self,
                  gamma=0.95,
                  num_epochs=5,
                  learning_rate=0.001,
@@ -26,7 +25,8 @@ class Agent:
         next_states = np.array([board.drop_piece(state, col, player) for col in free_cols])
         next_states = np.expand_dims(next_states, axis=3)
         values = self.model.predict(next_states).reshape(len(next_states))
-        best_col = free_cols[np.argmax(values)]
+        best_col = free_cols[np.argmax(player * values)]
+        print('values: {}\nbest column: {}'.format(values, best_col))
         return best_col, free_cols, values
 
     def evaluate(self, state, use_target_model=True):
@@ -74,4 +74,4 @@ class Agent:
         return model
     
     def compile_model(self, model):
-        model.compile(optimizer=Adam(lr=self.learning_rate), loss='mean_squared_error')
+        model.compile(optimizer=SGD(lr=self.learning_rate), loss='mean_squared_error')
