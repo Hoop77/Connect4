@@ -4,9 +4,6 @@ import numpy as np
 NUM_ROWS = 6
 NUM_COLS = 7
 
-STATE_SHAPE = (NUM_ROWS, NUM_COLS)
-NUM_ACTIONS = NUM_COLS
-
 FREE = 0
 PLAYER_1 = 1
 PLAYER_2 = -1
@@ -130,27 +127,13 @@ def score_position(board, currPlayer):
 
 	return score
 
-def choose_best_action(board, values):
-	avail_actions = get_free_columns(board) # assume sorted
-	avail_idx = 0
-	best_actions = []
-	Q_max = -math.inf
-	for action in range(NUM_ACTIONS):
-		if avail_idx >= len(avail_actions):
-			break
-		if action == avail_actions[avail_idx]:
-			Q = round(values[action], 5)
-			if Q > Q_max:
-				Q_max = Q
-				best_actions = [(action)]
-			elif Q == Q_max:
-				best_actions.append(action)
-			avail_idx += 1
-	return np.random.choice(best_actions)
-
 def get_outcome_after_move(board, player):
 	if check_for_winner(board, player):
 		return OUTCOME_WIN if player == PLAYER_1 else OUTCOME_DEFEAT
 	elif len(get_free_columns(board)) == 0:
 		return OUTCOME_DRAW
 	return OUTCOME_NONE
+
+def make_random_move(state, player):
+    col = np.random.choice(get_free_columns(state))
+    return drop_piece(state, col, player)

@@ -64,4 +64,4 @@ def random_block(state, curr_player):
 	return np.random.choice(free_cols)
 
 def random_choice(state):
-	return board.choose_best_action(state, np.zeros(board.NUM_COLS))
+	return np.random.choice(board.get_free_columns(state))
