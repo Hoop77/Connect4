@@ -60,7 +60,7 @@ def random_block(state, curr_player):
 		board.drop_piece_inplace(temp_state, free_cols[i], enemy)
 		if board.check_for_winner(temp_state, enemy):
 			return free_cols[i]
-	
+			
 	return np.random.choice(free_cols)
 
 def random_choice(state):

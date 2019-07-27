@@ -66,7 +66,7 @@ def evaluate_section(toEvaluate, currPlayer):
 	enemy = -1
 	
 	if currPlayer == 1:
-		enemy = 2
+		enemy = -1
 	else:
 		enemy = 1
 

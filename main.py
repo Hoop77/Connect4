@@ -38,14 +38,7 @@ def serverMode():
 def choose_column(request, board):
 	col = -1	
 	player = request.json['player']
-	# TODO: change this in front-end
-	if player == 2: 
-		player = -1
-	for row in range(len(board)):
-		for col in range(len(board[row])):
-			if board[row][col] == 2:
-				board[row][col] = -1
-	
+
 	if request.json['mode'] == "ql":
 		#exp = int(request.json['exp'])
 		#explo = float(request.json['explo'])
@@ -57,7 +50,7 @@ def choose_column(request, board):
 		depth = int(request.json['depth'])
 		col, minimax_score = minimax(board, depth, -math.inf, math.inf, True, player)
 	if request.json['mode'] == "rb":
-		col, _ = random_block(board, player)
+		col = random_block(board, player)
 		
 	return col
 
