@@ -9,11 +9,10 @@ import time
 import datetime
 from matplotlib import pyplot as plt
 
-def train(model_path='models/model.h5', 
+def train(file_name='models/model.h5', 
           resume_training=False,
           num_episodes=1000,
           life_plot=True,
-          self_play_args={},
           agent_args={},
           **kwargs):
     stats = statistics.default_stats()
@@ -22,22 +21,17 @@ def train(model_path='models/model.h5',
 
     agent = Agent(**agent_args)
     if resume_training:
-        agent.load(model_path)
+        agent.load(file_name)
 
     for episode in range(num_episodes):
         print('Episode {}/{}'.format(episode, num_episodes))       
 
-        agent.self_play(stats=stats, **self_play_args)
+        agent.self_play(stats=stats)
 
         if life_plot:
             plt_data = statistics.plot_stats(stats, data=plt_data)
             plt.pause(0.0001)
 
         if episode % 100 == 0:
-            agent.save(model_path)
-            # TODO: fixit
-            # saved_args = {
-            #     'agent_args': agent_args,
-            #     'num_episodes': num_episodes
-            # }
+            agent.save(file_name)
             # statistics.save_stats(stats, saved_args, stats_filename)

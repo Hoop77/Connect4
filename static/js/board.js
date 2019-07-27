@@ -11,6 +11,7 @@ var size = box.offsetWidth / 9;
 var gridWidth = size * 7 + 25;
 var gridHeight = size * 6;
 var gridData = null;
+var colValuesData = null;
 
 /**
  * D3.js data init and rendering
@@ -124,12 +125,14 @@ function renderGrid() {
                 d3.select(d3.event.target).on("click", null);
                 d3.select(d3.event.target).on("mouseover", null);
                 d3.select(d3.event.target).on("mouseout", null);
-                if (player1pickedSet && player2pickedSet) {
-                    setTimeout(function () {
+                if (gameEnded == false) {
+                    if (player1pickedSet && player2pickedSet) {
+                        setTimeout(function () {
+                            checkAiTurn();
+                        }, 1500);
+                    } else {
                         checkAiTurn();
-                    }, 1500);
-                } else {
-                    checkAiTurn();
+                    }
                 }
             }
         });
@@ -165,10 +168,77 @@ function handleMouseOut(d) {
     d3.select(d3.event.target).style("fill", "#fff").style("opacity", 1);
 }
 
-function resizeGrid() {
+/**
+ * D3.js data init and rendering for column values
+ */
+function initColValuesData() {
+    var data = new Array();
+    var xpos = 1;
+    var ypos = 1;
+    var width = size;
+    var height = size;
+    var text = 0;
+
+    for (var row = 0; row < 1; row++) {
+        data.push(new Array());
+        for (var column = 0; column < 7; column++) {
+            data[row].push({
+                x: xpos,
+                y: ypos,
+                width: width,
+                height: height,
+                text: text
+            })
+            xpos += width;
+        }
+        xpos = 1;
+        ypos += height;
+    }
+    return data;
+}
+
+function renderColValues() {
+    coLValuesHeight = size
+    document.getElementById("colValues").innerHTML = "";
+
+    var colValues = d3.select("#colValues")
+        .append("svg")
+        .attr("width", gridWidth)
+        .attr("height", coLValuesHeight);
+
+    var row = colValues.selectAll(".row")
+        .data(colValuesData)
+        .enter().append("g")
+        .attr("class", "row")
+        .style("fill", "#fff");
+        
+    var text = row.selectAll(".text")
+        .data(function (d) {
+            return d;
+        })
+        .enter().append("text")
+        .attr("width", function (d) {
+            return d.width;
+        })
+        .attr("height", function (d) {
+            return d.height;
+        })
+        .attr("x", function (d) {
+            return d.x + d.width/2;
+        })
+        .attr("y", function (d) {
+            return d.y + d.height/1.5;
+        })
+        .text(function (d) { return d.text; })
+        .style("fill", "black")
+        .style("font-size", "2em")
+}
+
+function resizeGridAndColValues() {
     var newGrid = document.getElementById("grid");
     var newWidth = newGrid.offsetWidth / 9;
 
+    size = newWidth;
     gridWidth = newWidth * 7 + 25;
     gridHeight = newWidth * 6;
 
@@ -177,6 +247,12 @@ function resizeGrid() {
 
     for (var row = 0; row < 6; row++) {
         for (var column = 0; column < 7; column++) {
+            if(row == 0) {
+                colValuesData[row][column].x = xpos;
+                colValuesData[row][column].y = ypos;
+                colValuesData[row][column].width = newWidth;
+                colValuesData[row][column].height = newWidth;
+            }
             gridData[row][column].x = xpos;
             gridData[row][column].y = ypos;
             gridData[row][column].width = newWidth;
@@ -186,6 +262,7 @@ function resizeGrid() {
         xpos = 1;
         ypos += newWidth;
     }
+    renderColValues();
     renderGrid();
 }
 
@@ -194,51 +271,51 @@ function resizeGrid() {
  */
 
 function checkAiTurn() {
-	if ((player1pickedSet && currPlayer == player1) || (player2pickedSet && currPlayer == player2)) {
+    if ((player1pickedSet && currPlayer == player1) || (player2pickedSet && currPlayer == player2)) {
         var resultCol = getColumnFromServer();
-		if (typeof resultCol === 'undefined') {
-			document.getElementById("gameInfo").innerHTML = "<h4>Fehler!</h4>";
-			setTimeout(function () {
-				document.getElementById("gameInfo").innerHTML = "";
-			}, 1500);
-		} else {
-			var row = getNextRow(resultCol);
-			var coords = getPos(document.getElementById("svgGrid"));
-			var radius = gridData[row][resultCol].width;
-			var x = gridData[row][resultCol].x + coords.x + radius / 2;
-			var y = gridData[row][resultCol].y + coords.y + radius / 2;
-			clickXY(x, y);
+        if (typeof resultCol === 'undefined') {
+            document.getElementById("gameInfo").innerHTML = "<h4>Fehler!</h4>";
+            setTimeout(function () {
+                document.getElementById("gameInfo").innerHTML = "";
+            }, 1500);
+        } else {
+            var row = getNextRow(resultCol);
+            var coords = getPos(document.getElementById("svgGrid"));
+            var radius = gridData[row][resultCol].width;
+            var x = gridData[row][resultCol].x + coords.x + radius / 2;
+            var y = gridData[row][resultCol].y + coords.y + radius / 2;
+            clickXY(x, y);
         }
-	}
+    }
 }
 
 function getNextRow(column) {
-	for (var row = 0; row < 6; row++) {
-		if (gridData[row][column].player != 0) {
-			return row - 1;
-		}
-		if (row == 5 && gridData[row][column].player == 0) {
-			return row;
-		}
-	}
+    for (var row = 0; row < 6; row++) {
+        if (gridData[row][column].player != 0) {
+            return row - 1;
+        }
+        if (row == 5 && gridData[row][column].player == 0) {
+            return row;
+        }
+    }
 }
 
 function clickXY(x, y) {
-	var ev = new MouseEvent('click', {
-		'view': window,
-		'bubbles': true,
-		'cancelable': true,
-		'screenX': x,
-		'screenY': y
-	});
-	var el = document.elementFromPoint(x, y);
-	el.dispatchEvent(ev);
+    var ev = new MouseEvent('click', {
+        'view': window,
+        'bubbles': true,
+        'cancelable': true,
+        'screenX': x,
+        'screenY': y
+    });
+    var el = document.elementFromPoint(x, y);
+    el.dispatchEvent(ev);
 }
 
 function getPos(element) {
-	var rect = element.getBoundingClientRect();
-	return {
-		x: rect.left,
-		y: rect.top
-	};
+    var rect = element.getBoundingClientRect();
+    return {
+        x: rect.left,
+        y: rect.top
+    };
 }

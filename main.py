@@ -5,6 +5,7 @@ import numpy as np
 np.random.seed(0)
 from agent import Agent
 from train import train
+from evaluate import evaluate
 from policy import minimax, random_block, random_choice
 import math
 import tensorflow as tf
@@ -14,13 +15,15 @@ app = Flask(__name__)
 
 args = {
 	'agent_args': {
-		'num_epochs': 1,
-		'learning_rate': 0.01
-	},
-	'self_play_args': {
+		'learning_rate': 0.01,
 		'gamma': 0.95,
 		'epsilon': 0.2
 	},
+	'evaluation_args': {
+		'player1_strategy': 0.95,
+		'player2_strategy': 0.2
+	},
+	'file_name': 'models/model.h5',
 	'resume_training': True,
 	'num_episodes': 1000000,
 	'life_plot': False
@@ -39,12 +42,12 @@ def choose_column(request, board):
 	col = -1	
 	player = request.json['player']
 
-	if request.json['mode'] == "ql":
+	if request.json['mode'] == "td":
 		#exp = int(request.json['exp'])
 		#explo = float(request.json['explo'])
 		with graph.as_default():
 			with session.as_default():
-				agent.load('models/model.h5')
+				agent.load(args['file_name'])
 				col, _, _ = agent.act(board, player)
 	if request.json['mode'] == "mm":
 		depth = int(request.json['depth'])
@@ -71,6 +74,7 @@ def data():
 def main():	
 	print("\n1. Server mode")
 	print("2. Training mode")
+	print("3. Evaluation mode")
 	mode = int(input("Choose your mode: "))
 
 	if mode == 1:
@@ -78,7 +82,10 @@ def main():
 		serverMode()
 	elif mode == 2:
 		print("\nYou picked the training mode!\n")
-		train(model_path='models/model.h5', **args)
+		train(**args)
+	elif mode == 3:
+		print("\nYou picked the evaluation mode!\n")
+		evaluate(**args)
 
 if __name__ == '__main__':
 	main()

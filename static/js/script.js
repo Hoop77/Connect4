@@ -17,14 +17,14 @@ function createRequestData() {
 		var gameMode1 = document.getElementById("gameMode1");
 		var gameModeValue1 = gameMode1.options[gameMode1.selectedIndex].value;
 
-		if (gameModeValue1 == "ql") {
+		if (gameModeValue1 == "td") {
 			var depth = document.getElementById("deep1").value;
 			var exp = document.getElementById("expSet1").value;
 			var explo = document.getElementById("exploSet1").value;
 			jsonRequest = JSON.stringify({
 				"grid": jsonGrid,
 				"player": currPlayer,
-				"mode": "ql",
+				"mode": "td",
 				"exp": exp,
 				"explo": explo
 			})
@@ -49,13 +49,13 @@ function createRequestData() {
 		var gameMode2 = document.getElementById("gameMode2");
 		var gameModeValue2 = gameMode2.options[gameMode2.selectedIndex].value;
 
-		if (gameModeValue2 == "ql") {
+		if (gameModeValue2 == "td") {
 			var depth = document.getElementById("deep2").value;
 			var depth = document.getElementById("deep2").value;
 			jsonRequest = JSON.stringify({
 				"grid": jsonGrid,
 				"player": currPlayer,
-				"mode": "ql",
+				"mode": "td",
 				"depth": depth
 			})
 		}
@@ -145,12 +145,10 @@ function checkWinner() {
 }
 
 function checkTie() {
-	var foundEmptySpace = false;
-	for (var row = 0; row < 6; row++) {
-		for (var column = 0; column < 7; column++) {
-			if (gridData[row][column].player == 0) {
-				foundEmptySpace = true;
-			}
+	var foundEmptySpace = true;
+	for (var column = 0; column < 7; column++) {
+		if (gridData[0][column].player == 0) {
+			foundEmptySpace = false;
 		}
 	}
 	return foundEmptySpace;
@@ -179,7 +177,7 @@ function dropCoin(column) {
 		gameEndedProcedure();
 	}
 
-	if (!checkTie()) {
+	if (checkTie()) {
 		document.getElementById("gameInfo").innerHTML = "";
 		document.getElementById("gameInfo").innerHTML = "<h3>Unentschieden!</h3>";
 		gameEndedProcedure();
@@ -204,4 +202,6 @@ Main
 */
 gridData = initGridData();
 renderGrid();
+colValuesData = initColValuesData();
+renderColValues();
 $("#grid").addClass("disableAndOpacity");

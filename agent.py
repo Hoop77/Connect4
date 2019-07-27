@@ -17,14 +17,14 @@ REWARD_TABLE = {
 class Agent:
     def __init__(self,
                  gamma=0.95,
-                 num_epochs=5,
-                 learning_rate=0.001,
+                 epsilon=0.2,
+                 learning_rate=0.01,
                  **kwargs):
         self.gamma = gamma
+        self.epsilon = epsilon
         self.learning_rate = learning_rate
         self.model = self.build_model()
         self.total_steps = 0
-        self.num_epochs = num_epochs
 
     def act(self, state, player):
         free_cols = board.get_free_columns(state)
@@ -44,7 +44,6 @@ class Agent:
         history = self.model.fit(
             x=state.reshape(1, board.NUM_ROWS, board.NUM_COLS, 1),
             y=np.array([[target]]),
-            epochs=self.num_epochs, 
             verbose=0)
 
         stats['loss']['steps'].append(self.total_steps)
@@ -52,16 +51,13 @@ class Agent:
         
         self.total_steps += 1
 
-    def self_play(self,
-              epsilon=0.1,
-              gamma=0.9,
-              stats=None):
+    def self_play(self, stats=None):
         episode_length = 0
         state = np.zeros(board.STATE_SHAPE)
         player = board.PLAYER_1
         outcome = board.OUTCOME_NONE
         while outcome == board.OUTCOME_NONE:
-            random_move = np.random.rand() <= epsilon
+            random_move = np.random.rand() <= self.epsilon
             if random_move:
                 next_state = board.make_random_move(state, player)
                 outcome = board.get_outcome_after_move(next_state, player)
@@ -69,7 +65,7 @@ class Agent:
                     target = REWARD_TABLE[outcome]
                     self.train(state, target, stats=stats)
             else:
-                next_state, target = self.make_best_move(state, player, gamma)
+                next_state, target = self.make_best_move(state, player, self.gamma)
                 self.train(state, target, stats=stats)
 
             outcome = board.get_outcome_after_move(next_state, player)

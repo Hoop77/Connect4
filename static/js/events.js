@@ -41,10 +41,10 @@ document.getElementById("confirmBtn1").addEventListener("click", function () {
 
     var tempGameMode = document.getElementById("gameMode1");
     document.getElementById("setList1").innerHTML = "";
-    if (tempGameMode.value == "ql") {
+    if (tempGameMode.value == "td") {
         var tempExpSet = document.getElementById("expSet1").value;
         var tempExploSet = document.getElementById("exploSet1").value;
-        document.getElementById("setList1").innerHTML += "<p>Q-Learning</p>"
+        document.getElementById("setList1").innerHTML += "<p>TD Learning</p>"
         document.getElementById("setList1").innerHTML += "<p>" + tempExpSet + "</p>"
         document.getElementById("setList1").innerHTML += "<p>" + tempExploSet + "</p>"
     }
@@ -64,10 +64,10 @@ document.getElementById("confirmBtn2").addEventListener("click", function () {
 
     var tempGameMode = document.getElementById("gameMode2");
     document.getElementById("setList2").innerHTML = "";
-    if (tempGameMode.value == "ql") {
+    if (tempGameMode.value == "td") {
         var tempExpSet = document.getElementById("expSet2").value;
         var tempExploSet = document.getElementById("exploSet2").value;
-        document.getElementById("setList2").innerHTML += "<p>Q Learning</p>"
+        document.getElementById("setList2").innerHTML += "<p>TD Learning</p>"
         document.getElementById("setList2").innerHTML += "<p>" + tempExpSet + "</p>"
         document.getElementById("setList2").innerHTML += "<p>" + tempExploSet + "</p>"
     }
@@ -146,7 +146,7 @@ document.getElementById("gameMode1").addEventListener("change", function () {
         document.getElementById("exploSet1Box").style.display = "none";
         document.getElementById("deep1Box").style.display = "block";
     }
-    if (this.value == "ql") {
+    if (this.value == "td") {
         document.getElementById("deep1Box").style.display = "none";
         document.getElementById("expSet1Box").style.display = "block";
         document.getElementById("exploSet1Box").style.display = "block";
@@ -164,7 +164,7 @@ document.getElementById("gameMode2").addEventListener("change", function () {
         document.getElementById("exploSet2Box").style.display = "none";
         document.getElementById("deep2Box").style.display = "block";
     }
-    if (this.value == "ql") {
+    if (this.value == "td") {
         document.getElementById("deep2Box").style.display = "none";
         document.getElementById("expSet2Box").style.display = "block";
         document.getElementById("exploSet2Box").style.display = "block";
@@ -207,7 +207,7 @@ document.getElementById("startGame").addEventListener("click", function () {
     }
 });
 
-window.addEventListener('resize', resizeGrid);
+window.addEventListener('resize', resizeGridAndColValues);
 
 $('[data-toggle="tooltip"]').tooltip({
     delay: {
