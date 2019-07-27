@@ -2,6 +2,9 @@ var blueBoardColor = "#5087D1";
 var redCoinColor = "#FB382E";
 var yellowCoinColor = "#FBE92E";
 
+var player1 = 1;
+var player2 = -1;
+
 // grid size definition
 var box = document.getElementById("grid");
 var size = box.offsetWidth / 9;
@@ -124,7 +127,7 @@ function renderGrid() {
                 if (player1pickedSet && player2pickedSet) {
                     setTimeout(function () {
                         checkAiTurn();
-                    }, 500);
+                    }, 1500);
                 } else {
                     checkAiTurn();
                 }
@@ -136,14 +139,14 @@ function getColor(d) {
     if (d.player == 1) {
         return redCoinColor
     }
-    if (d.player == 2) {
+    if (d.player == -1) {
         return yellowCoinColor
     }
     return "#fff"
 }
 
 function handleMouseClick() {
-    if (currPlayer == 1) {
+    if (currPlayer == player1) {
         d3.select(d3.event.target).style("fill", redCoinColor).style("opacity", 1);
     } else {
         d3.select(d3.event.target).style("fill", yellowCoinColor).style("opacity", 1);
@@ -151,7 +154,7 @@ function handleMouseClick() {
 }
 
 function handleMouseOver(d) {
-    if (currPlayer == 1) {
+    if (currPlayer == player1) {
         d3.select(d3.event.target).style("fill", redCoinColor).style("opacity", 1);
     } else {
         d3.select(d3.event.target).style("fill", yellowCoinColor).style("opacity", 1);
@@ -191,13 +194,13 @@ function resizeGrid() {
  */
 
 function checkAiTurn() {
-	if ((player1pickedSet && currPlayer == 1) || (player2pickedSet && currPlayer == 2)) {
+	if ((player1pickedSet && currPlayer == player1) || (player2pickedSet && currPlayer == player2)) {
         var resultCol = getColumnFromServer();
 		if (typeof resultCol === 'undefined') {
 			document.getElementById("gameInfo").innerHTML = "<h4>Fehler!</h4>";
 			setTimeout(function () {
 				document.getElementById("gameInfo").innerHTML = "";
-			}, 500);
+			}, 1500);
 		} else {
 			var row = getNextRow(resultCol);
 			var coords = getPos(document.getElementById("svgGrid"));

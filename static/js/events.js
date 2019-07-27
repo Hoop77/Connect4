@@ -211,7 +211,7 @@ window.addEventListener('resize', resizeGrid);
 
 $('[data-toggle="tooltip"]').tooltip({
     delay: {
-        show: 500,
+        show: 250,
         hide: 0
     }
 })

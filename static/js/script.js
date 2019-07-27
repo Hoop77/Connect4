@@ -168,7 +168,7 @@ function dropCoin(column) {
 	}
 
 	if (checkWinner()) {
-		if (currPlayer == 1) {
+		if (currPlayer == player1) {
 			document.getElementById("gameInfo").innerHTML = "";
 			document.getElementById("gameInfo").innerHTML = "<h3>Spieler 1 gewinnt!</h3>";
 
@@ -185,10 +185,10 @@ function dropCoin(column) {
 		gameEndedProcedure();
 	}
 
-	if (currPlayer == 1) {
-		currPlayer = 2;
+	if (currPlayer == player1) {
+		currPlayer = player2;
 	} else {
-		currPlayer = 1;
+		currPlayer = player1;
 	}
 }
 
