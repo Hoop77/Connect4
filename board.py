@@ -4,6 +4,9 @@ import numpy as np
 NUM_ROWS = 6
 NUM_COLS = 7
 
+STATE_SHAPE = (NUM_ROWS, NUM_COLS)
+NUM_ACTIONS = NUM_COLS
+
 FREE = 0
 PLAYER_1 = 1
 PLAYER_2 = -1
