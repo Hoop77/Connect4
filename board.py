@@ -63,12 +63,12 @@ def check_terminal_node(board):
 def evaluate_section(toEvaluate, currPlayer):
 	score = 0
 	free = 0
-	enemy = -1
+	enemy = PLAYER_2
 	
-	if currPlayer == 1:
-		enemy = -1
+	if currPlayer == PLAYER_1:
+		enemy = PLAYER_2
 	else:
-		enemy = 1
+		enemy = PLAYER_1
 
 	if toEvaluate.count(currPlayer) == 4:
 		score += 100
