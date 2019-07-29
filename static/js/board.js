@@ -177,7 +177,7 @@ function initColValuesData() {
     var ypos = 1;
     var width = size;
     var height = size;
-    var text = 0;
+    var text = "";
 
     for (var row = 0; row < 1; row++) {
         data.push(new Array());
@@ -211,7 +211,7 @@ function renderColValues() {
         .enter().append("g")
         .attr("class", "row")
         .style("fill", "#fff");
-        
+
     var text = row.selectAll(".text")
         .data(function (d) {
             return d;
@@ -224,12 +224,14 @@ function renderColValues() {
             return d.height;
         })
         .attr("x", function (d) {
-            return d.x + d.width/2;
+            return d.x + d.width / 2;
         })
         .attr("y", function (d) {
-            return d.y + d.height/1.5;
+            return d.y + d.height / 1.5;
         })
-        .text(function (d) { return d.text; })
+        .text(function (d) {
+            return d.text;
+        })
         .style("fill", "black")
         .style("font-size", "2em")
 }
@@ -247,7 +249,7 @@ function resizeGridAndColValues() {
 
     for (var row = 0; row < 6; row++) {
         for (var column = 0; column < 7; column++) {
-            if(row == 0) {
+            if (row == 0) {
                 colValuesData[row][column].x = xpos;
                 colValuesData[row][column].y = ypos;
                 colValuesData[row][column].width = newWidth;
@@ -266,13 +268,34 @@ function resizeGridAndColValues() {
     renderGrid();
 }
 
+function refreshColValues(response) {
+    if (Object.keys(response).length == 1) {
+        for (var row = 0; row < 1; row++) {
+            for (var column = 0; column < 7; column++) {
+                colValuesData[row][column].text = "";
+            }
+        }
+    } else {
+        colValuesData[0][0].text = response.col0;
+        colValuesData[0][1].text = response.col1;
+        colValuesData[0][2].text = response.col2;
+        colValuesData[0][3].text = response.col3;
+        colValuesData[0][4].text = response.col4;
+        colValuesData[0][5].text = response.col5;
+        colValuesData[0][6].text = response.col6;
+    }
+    renderColValues();
+}
+
 /**
  * Handle AI vs AI situation
  */
 
 function checkAiTurn() {
     if ((player1pickedSet && currPlayer == player1) || (player2pickedSet && currPlayer == player2)) {
-        var resultCol = getColumnFromServer();
+        var response = getColumnFromServer();
+        var resultCol = response.column;
+        refreshColValues(response);
         if (typeof resultCol === 'undefined') {
             document.getElementById("gameInfo").innerHTML = "<h4>Fehler!</h4>";
             setTimeout(function () {

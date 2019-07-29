@@ -9,5 +9,8 @@ def test_more(*args, **kwargs):
     print(kwargs)
 
 if __name__ == '__main__':
-    test_keywords(hallo='wert1', param=23)
-    test_more(42, hallo='wert1', param=23)
+    array = np.array([4,2,7,1])
+    temp = array.argsort()
+    ranks = np.empty_like(temp)
+    ranks[temp] = np.arange(len(array))
+    print(temp)

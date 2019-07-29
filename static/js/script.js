@@ -101,7 +101,7 @@ function getColumnFromServer() {
 	}
 
 	console.log(jsonResponse);
-	return jsonResponse.column;
+	return jsonResponse;
 }
 
 /**

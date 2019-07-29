@@ -97,6 +97,7 @@ document.getElementById("back3").addEventListener("click", function () {
         document.getElementById("back3").style.display = "none";
         document.getElementById("playerPickBox1").style.display = "block";
         player1pickedHuman = false;
+        console.log("asdad");
         document.getElementById("grid").classList.add("disableAndOpacity");
         document.getElementById("startGame").classList.remove("disableAndOpacity");
         if (!gameEnded)
@@ -121,6 +122,7 @@ document.getElementById("back4").addEventListener("click", function () {
         document.getElementById("playerPickBox2").style.display = "block";
         player2pickedHuman = false;
         document.getElementById("grid").classList.add("disableAndOpacity");
+        document.getElementById("startGame").classList.remove("disableAndOpacity");
         if (!gameEnded)
             document.getElementById("startGame").innerText = "Spiel fortsetzen";
     } else {
@@ -130,6 +132,7 @@ document.getElementById("back4").addEventListener("click", function () {
         document.getElementById("settingsAiTemplate2").style.display = "block";
         player2pickedSet = false;
         document.getElementById("grid").classList.add("disableAndOpacity");
+        document.getElementById("startGame").classList.remove("disableAndOpacity");
         if (!gameEnded)
             document.getElementById("startGame").innerText = "Spiel fortsetzen";
     }
