@@ -222,8 +222,3 @@ $('[data-toggle="tooltip"]').tooltip({
 $('.toolEvent').on('click', function () {
     $(this).tooltip('hide')
 })
-
-//TODO
-/*window.addEventListener("beforeunload", function(event) {
-    event.returnValue = "Your custom message.";
-});*/

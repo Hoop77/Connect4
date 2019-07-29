@@ -5,7 +5,6 @@ import numpy as np
 np.random.seed(0)
 from agent import Agent
 from train import train
-from evaluate import evaluate
 from policy import minimax, random_block, random_choice
 import math
 import tensorflow as tf
@@ -94,8 +93,7 @@ def data():
 def main():	
 	print("\n1. Server mode")
 	print("2. Training mode")
-	print("3. Evaluation mode")
-	print("4. Plot stats")
+	print("3. Plot stats")
 	mode = int(input("Choose your mode: "))
 
 	if mode == 1:
@@ -105,11 +103,8 @@ def main():
 		print("\nYou picked the training mode!\n")
 		train(**args)
 	elif mode == 3:
-		print("\nYou picked the evaluation mode!\n")
-		evaluate(agent, graph, session)
-	elif mode == 4:
 		print("\nYou picked the statistics mode!\n")
-		path = int(input("Statistic path to plot: "))
+		path = int(input("Filepath of statistic to plot: "))
 		#stats_data = statistics.load_stats(path)
     	#statistics.plot_stats(stats_data)
 
