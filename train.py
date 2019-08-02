@@ -2,36 +2,44 @@ import numpy as np
 np.random.seed(0)
 from agent import Agent
 from policy import minimax, random_choice
-import math
 import board
-import statistics
-import time
 import datetime
 from matplotlib import pyplot as plt
+from statistics import show_life_plot, get_life_plot_stats
 
-def train(file_name='models/model.h5', 
+def train(stats=None, file_name='models/model.h5', 
           resume_training=False,
           num_episodes=1000,
           life_plot=True,
+          create_stats=True,
           agent_args={},
           **kwargs):
-    stats = statistics.default_stats()
-    stats_filename = "stats/stats-{}.json".format(time.strftime("%Y%m%d-%H%M%S"))
-    plt_data = statistics.plot_stats(stats, data=None)
+
+    life_plot_stats = get_life_plot_stats()
+    plt_data = show_life_plot(life_plot_stats, data=None)
 
     agent = Agent(**agent_args)
     if resume_training:
         agent.load(file_name)
 
     for episode in range(num_episodes):
-        print('Episode {}/{}'.format(episode, num_episodes))       
+        print('Episode {}/{}'.format(episode, num_episodes))
 
-        agent.self_play(stats=stats)
+        loss, epsilon, learning_rate = agent.self_play()
 
-        if life_plot:
-            plt_data = statistics.plot_stats(stats, data=plt_data)
+        if create_stats and episode % 25 == 0:
+            stats.append_stats("<episode="+str(episode)+">")
+            stats.append_stats("<loss="+str(np.round(loss,5))+">")
+            stats.append_stats("<epsilon="+str(epsilon)+">")
+            stats.append_stats("<learning_rate="+str(learning_rate)+">")
+
+        if life_plot and episode % 25 == 0:
+            life_plot_stats['episode'].append(episode)
+            life_plot_stats['loss'].append(loss)
+            life_plot_stats['epsilon'].append(epsilon)
+            life_plot_stats['learning_rate'].append(learning_rate)
+            plt_data = show_life_plot(life_plot_stats, data=plt_data)
             plt.pause(0.0001)
 
         if episode % 100 == 0:
             agent.save(file_name)
-            # statistics.save_stats(stats, saved_args, stats_filename)

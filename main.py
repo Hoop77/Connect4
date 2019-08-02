@@ -1,6 +1,5 @@
 import sys
-import simplejson as json
-from flask import Flask, render_template, request
+import json
 import numpy as np
 np.random.seed(0)
 from agent import Agent
@@ -9,24 +8,26 @@ from policy import minimax, random_block, random_choice
 import math
 import tensorflow as tf
 import board
-import statistics
+from statistics import Stats
+from flask import Flask, render_template, request
+import tkinter as tk
+from tkinter import filedialog
 
 app = Flask(__name__)
 
 args = {
 	'agent_args': {
 		'learning_rate': 0.01,
+		'learning_rate_min': 0.005,
 		'gamma': 0.95,
-		'epsilon': 0.2
-	},
-	'evaluation_args': {
-		'player1_strategy': 0.95,
-		'player2_strategy': 0.2
+		'epsilon': 0.2,
+		'epsilon_min': 0.1
 	},
 	'file_name': 'models/model.h5',
 	'resume_training': True,
-	'num_episodes': 120,
-	'life_plot': False
+	'num_episodes': 310,
+	'life_plot': True,
+	'create_stats': True
 }
 
 session = tf.Session()
@@ -101,12 +102,18 @@ def main():
 		serverMode()
 	elif mode == 2:
 		print("\nYou picked the training mode!\n")
-		train(**args)
+		if args['create_stats']:
+			stats = Stats(args)
+			train(stats, **args)
+		else:
+			train(**args)
 	elif mode == 3:
 		print("\nYou picked the statistics mode!\n")
-		path = int(input("Filepath of statistic to plot: "))
-		#stats_data = statistics.load_stats(path)
-    	#statistics.plot_stats(stats_data)
+		root = tk.Tk()
+		root.withdraw()
+		file_path = filedialog.askopenfilename()
+		stats = Stats()
+		stats.plot_stats(file_path)
 
 if __name__ == '__main__':
 	main()

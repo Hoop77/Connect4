@@ -18,11 +18,15 @@ class Agent:
     def __init__(self,
                  gamma=0.95,
                  epsilon=0.2,
+                 epsilon_min=0.1,
                  learning_rate=0.01,
+                 learning_rate_min=0.001,
                  **kwargs):
         self.gamma = gamma
         self.epsilon = epsilon
+        self.epsilon_min = epsilon_min
         self.learning_rate = learning_rate
+        self.learning_rate_min = learning_rate_min
         self.model = self.build_model()
         self.total_steps = 0
 
@@ -40,19 +44,18 @@ class Agent:
         state = state.reshape(1, board.NUM_ROWS, board.NUM_COLS, 1)
         return self.model.predict(state)[0][0]
 
-    def train(self, state, target, stats=None):
+    def train(self, state, target):
         history = self.model.fit(
             x=state.reshape(1, board.NUM_ROWS, board.NUM_COLS, 1),
             y=np.array([[target]]),
             verbose=0)
 
-        stats['loss']['steps'].append(self.total_steps)
-        stats['loss']['values'].append(np.sqrt(history.history['loss'][-1]))
-        
         self.total_steps += 1
+        return np.sqrt(history.history['loss'][-1])
 
-    def self_play(self, stats=None):
+    def self_play(self):
         episode_length = 0
+        loss = 0
         state = np.zeros(board.STATE_SHAPE)
         player = board.PLAYER_1
         outcome = board.OUTCOME_NONE
@@ -63,18 +66,17 @@ class Agent:
                 outcome = board.get_outcome_after_move(next_state, player)
                 if outcome == board.OUTCOME_WIN or outcome == board.OUTCOME_DEFEAT:
                     target = REWARD_TABLE[outcome]
-                    self.train(state, target, stats=stats)
+                    loss = self.train(state, target)
             else:
                 next_state, target = self.make_best_move(state, player, self.gamma)
-                self.train(state, target, stats=stats)
+                loss = self.train(state, target)
 
             outcome = board.get_outcome_after_move(next_state, player)
             state = next_state
             player = -player
             episode_length += 1
-        
-        stats['episode_outcomes'].append(-player)
-        stats['episode_lengths'].append(episode_length)
+
+        return loss, self.epsilon, self.learning_rate
 
     def make_best_move(self, state, player, gamma):
         cols = board.get_free_columns(state)
