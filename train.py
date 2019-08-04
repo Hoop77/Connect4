@@ -22,7 +22,7 @@ def train(stats=None, file_name='models/model.h5',
     if resume_training:
         agent.load(file_name)
 
-    for episode in range(num_episodes):
+    for episode in range(num_episodes + 1):
         print('Episode {}/{}'.format(episode, num_episodes))
 
         loss, epsilon, learning_rate = agent.self_play()
@@ -43,3 +43,7 @@ def train(stats=None, file_name='models/model.h5',
 
         if episode % 100 == 0:
             agent.save(file_name)
+
+        if episode % 50000 == 0:
+            model_path = "models/model"+str(episode)+".h5"
+            agent.save(model_path)

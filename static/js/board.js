@@ -69,6 +69,7 @@ function dropCoin(column) {
 			document.getElementById("gameInfo").innerHTML = "<h3>Spieler 2 gewinnt!</h3>";
 		}
 		gameEndedProcedure();
+		return;
 	}
 
 	if (checkTie()) {

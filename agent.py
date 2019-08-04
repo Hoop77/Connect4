@@ -40,10 +40,6 @@ class Agent:
         print('values: {}\nbest column: {}'.format(values, best_col))
         return best_col, free_cols, values
 
-    def evaluate(self, state, use_target_model=True):
-        state = state.reshape(1, board.NUM_ROWS, board.NUM_COLS, 1)
-        return self.model.predict(state)[0][0]
-
     def train(self, state, target):
         history = self.model.fit(
             x=state.reshape(1, board.NUM_ROWS, board.NUM_COLS, 1),

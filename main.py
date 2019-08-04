@@ -15,20 +15,7 @@ from tkinter import filedialog
 
 app = Flask(__name__)
 
-args = {
-	'agent_args': {
-		'learning_rate': 0.01,
-		'learning_rate_min': 0.005,
-		'gamma': 0.95,
-		'epsilon': 0.2,
-		'epsilon_min': 0.1
-	},
-	'file_name': 'models/model.h5',
-	'resume_training': True,
-	'num_episodes': 310,
-	'life_plot': True,
-	'create_stats': True
-}
+args = {} # loaded from config.json
 
 session = tf.Session()
 graph = tf.get_default_graph()
@@ -91,7 +78,14 @@ def data():
 	
 	return jsonResponse
 
-def main():	
+def get_config_json():
+	with open('config.json') as json_file:
+		data = json.load(json_file)
+		return data['args']
+
+def main():
+	global args
+	args = get_config_json()
 	print("\n1. Server mode")
 	print("2. Training mode")
 	print("3. Plot stats")
