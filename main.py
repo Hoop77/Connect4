@@ -1,6 +1,7 @@
 import sys
 import json
 import numpy as np
+from flask import Flask, render_template, request
 np.random.seed(0)
 from agent import Agent
 from train import train
@@ -9,7 +10,6 @@ import math
 import tensorflow as tf
 import board
 from statistics import Stats
-from flask import Flask, render_template, request
 import tkinter as tk
 from tkinter import filedialog
 
