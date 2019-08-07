@@ -43,10 +43,8 @@ document.getElementById("confirmBtn1").addEventListener("click", function () {
     document.getElementById("setList1").innerHTML = "";
     if (tempGameMode.value == "td") {
         var tempExpSet = document.getElementById("expSet1").value;
-        var tempExploSet = document.getElementById("exploSet1").value;
         document.getElementById("setList1").innerHTML += "<p>TD Learning</p>"
         document.getElementById("setList1").innerHTML += "<p>" + tempExpSet + "</p>"
-        document.getElementById("setList1").innerHTML += "<p>" + tempExploSet + "</p>"
     }
     if (tempGameMode.value == "mm") {
         var tempTreeDepth = document.getElementById("deep1").value;
@@ -66,10 +64,8 @@ document.getElementById("confirmBtn2").addEventListener("click", function () {
     document.getElementById("setList2").innerHTML = "";
     if (tempGameMode.value == "td") {
         var tempExpSet = document.getElementById("expSet2").value;
-        var tempExploSet = document.getElementById("exploSet2").value;
         document.getElementById("setList2").innerHTML += "<p>TD Learning</p>"
         document.getElementById("setList2").innerHTML += "<p>" + tempExpSet + "</p>"
-        document.getElementById("setList2").innerHTML += "<p>" + tempExploSet + "</p>"
     }
     if (tempGameMode.value == "mm") {
         var tempTreeDepth = document.getElementById("deep2").value;
@@ -108,6 +104,7 @@ document.getElementById("back3").addEventListener("click", function () {
         document.getElementById("confirmTemplate1").style.display = "block";
         document.getElementById("settingsAiTemplate1").style.display = "block";
         player1pickedSet = false;
+        manualTurn = false;
         document.getElementById("grid").classList.add("disableAndOpacity");
         document.getElementById("startGame").classList.remove("disableAndOpacity");
         if (!gameEnded)
@@ -131,6 +128,7 @@ document.getElementById("back4").addEventListener("click", function () {
         document.getElementById("confirmTemplate2").style.display = "block";
         document.getElementById("settingsAiTemplate2").style.display = "block";
         player2pickedSet = false;
+        manualTurn = false;
         document.getElementById("grid").classList.add("disableAndOpacity");
         document.getElementById("startGame").classList.remove("disableAndOpacity");
         if (!gameEnded)
@@ -141,41 +139,43 @@ document.getElementById("back4").addEventListener("click", function () {
 document.getElementById("gameMode1").addEventListener("change", function () {
     if (this.value == "rb") {
         document.getElementById("expSet1Box").style.display = "none";
-        document.getElementById("exploSet1Box").style.display = "none";
         document.getElementById("deep1Box").style.display = "none";
     }
     if (this.value == "mm") {
         document.getElementById("expSet1Box").style.display = "none";
-        document.getElementById("exploSet1Box").style.display = "none";
         document.getElementById("deep1Box").style.display = "block";
     }
     if (this.value == "td") {
         document.getElementById("deep1Box").style.display = "none";
         document.getElementById("expSet1Box").style.display = "block";
-        document.getElementById("exploSet1Box").style.display = "block";
     }
 });
 
 document.getElementById("gameMode2").addEventListener("change", function () {
     if (this.value == "rb") {
         document.getElementById("expSet2Box").style.display = "none";
-        document.getElementById("exploSet2Box").style.display = "none";
         document.getElementById("deep2Box").style.display = "none";
     }
     if (this.value == "mm") {
         document.getElementById("expSet2Box").style.display = "none";
-        document.getElementById("exploSet2Box").style.display = "none";
         document.getElementById("deep2Box").style.display = "block";
     }
     if (this.value == "td") {
         document.getElementById("deep2Box").style.display = "none";
         document.getElementById("expSet2Box").style.display = "block";
-        document.getElementById("exploSet2Box").style.display = "block";
     }
 });
 
 document.getElementById("delete").addEventListener("click", function () {
     location.reload();
+});
+
+document.getElementById("help").addEventListener("click", function () {
+    $("#infoModal").modal()
+    document.getElementById("showSwitch").checked = hideColValues
+    $('#showSwitch').change(function() {
+        hideColValues = document.getElementById("showSwitch").checked;
+    })
 });
 
 document.getElementById("startGame").addEventListener("click", function () {
@@ -194,9 +194,16 @@ document.getElementById("startGame").addEventListener("click", function () {
             document.getElementById("startGame").innerText = "Spiel starten";
             document.getElementById("grid").classList.remove("disableAndOpacity");
             continueGame = false;
+            if (manualTurn) {
+                checkAiTurn();
+                return;
+            }
+
             if ((player1pickedSet && player2pickedHuman) || (player1pickedSet && player2pickedSet)) {
                 checkAiTurn();
             }
+
+
         } else {
             document.getElementById("grid").classList.remove("disableAndOpacity");
             continueGame = true;
@@ -206,7 +213,7 @@ document.getElementById("startGame").addEventListener("click", function () {
             }
         }
     } else {
-        $("#settingsModal").modal()
+        $("#alertModal").modal()
     }
 });
 
@@ -222,3 +229,7 @@ $('[data-toggle="tooltip"]').tooltip({
 $('.toolEvent').on('click', function () {
     $(this).tooltip('hide')
 })
+
+window.onbeforeunload = function() {
+    return "Möchten sie die Seite wirklich verlassen?"
+}

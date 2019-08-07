@@ -18,7 +18,7 @@ def train(stats=None, file_name='models/model.h5',
     life_plot_stats = get_life_plot_stats()
     plt_data = show_life_plot(life_plot_stats, data=None)
 
-    agent = Agent(**agent_args)
+    agent = Agent(num_episodes, **agent_args)
     if resume_training:
         agent.load(file_name)
 
@@ -29,9 +29,9 @@ def train(stats=None, file_name='models/model.h5',
 
         if create_stats and episode % 25 == 0:
             stats.append_stats("<episode="+str(episode)+">")
-            stats.append_stats("<loss="+str(np.round(loss,5))+">")
-            stats.append_stats("<epsilon="+str(epsilon)+">")
-            stats.append_stats("<learning_rate="+str(learning_rate)+">")
+            stats.append_stats("<loss="+np.format_float_positional((np.round(np.float32(loss),6)))+">")
+            stats.append_stats("<epsilon="+np.format_float_positional((np.round(np.float32(epsilon),6)))+">")
+            stats.append_stats("<learning_rate="+np.format_float_positional((np.round(np.float32(learning_rate),6)))+">")
 
         if life_plot and episode % 25 == 0:
             life_plot_stats['episode'].append(episode)

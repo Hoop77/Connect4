@@ -16,12 +16,14 @@ REWARD_TABLE = {
 
 class Agent:
     def __init__(self,
+                num_episodes=None,
                  gamma=0.95,
                  epsilon=0.2,
                  epsilon_min=0.1,
                  learning_rate=0.01,
                  learning_rate_min=0.001,
                  **kwargs):
+        self.num_episodes = num_episodes
         self.gamma = gamma
         self.epsilon = epsilon
         self.epsilon_min = epsilon_min

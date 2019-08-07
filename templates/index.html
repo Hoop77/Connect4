@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
   <meta charset="UTF-8">
   <!-- Extern sources -->
-  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='includes/bootstrap/css/bootstrap.min.css') }}">
-  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='includes/awesomefonts/css/all.css') }}">
+  <link type="text/css" rel="stylesheet"
+    href="{{ url_for('static', filename='includes/bootstrap/css/bootstrap.min.css') }}">
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='includes/fontawesome/css/all.css') }}">
   <script src="{{ url_for('static', filename='includes/jquery/jquery-3.4.1.min.js') }}"></script>
   <script src="{{ url_for('static', filename='includes/popper/popper.min.js') }}"></script>
   <script src="{{ url_for('static', filename='includes/bootstrap/js/bootstrap.min.js') }}"></script>
@@ -15,6 +17,7 @@
   <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <title>Reinforcement Learning</title>
 </head>
+
 <body>
   <div class="vertical-center">
     <div class="container">
@@ -59,11 +62,11 @@
               </div>
               <div>
                 <div id="deep1Box" class="form-group setting-drop-down center" style="display: none">
-                  <label for="deep1">Züge im voraus</label>
+                  <label for="deep1">Baumtiefe</label>
                   <select id="deep1" class="form-control">
                     <option>1</option>
                     <option>2</option>
-                    <option>3</option>
+                    <option selected>3</option>
                     <option>4</option>
                     <option>5</option>
                     <option>6</option>
@@ -75,25 +78,18 @@
                 <div id="expSet1Box" class="form-group setting-drop-down center">
                   <label for="expSet1">Lernepisoden</label>
                   <select id="expSet1" class="form-control">
-                    <option>5000</option>
-                    <option>1000</option>
-                    <option>500</option>
+                    <option value="500000">500.000</option>
+                    <option value="250000">250.000</option>
+                    <option value="125000">125.000</option>
+                    <option value="60000">60.000</option>
+                    <option value="30000">30.000</option>
+                    <option value="15000">15.000</option>
                   </select>
                 </div>
               </div>
               <div>
-                <div id="exploSet1Box" class="form-group setting-drop-down center">
-                  <label for="exploSet1">Explorationsfaktor</label>
-                  <select id="exploSet1" class="form-control">
-                    <option>0.9</option>
-                    <option>0.7</option>
-                    <option>0.5</option>
-                  </select>
-                </div>
-                <div>
-                  <button id="back1" type="button" class="btn btn-primary-outline"><i
-                      class="fas fa-undo fa-lg"></i></i></button>
-                </div>
+                <button id="back1" type="button" class="btn btn-primary-outline"><i
+                    class="fas fa-undo fa-lg"></i></i></button>
               </div>
             </form>
           </div>
@@ -144,11 +140,11 @@
               </div>
               <div>
                 <div id="deep2Box" class="form-group setting-drop-down center" style="display: none">
-                  <label for="deep2">Züge im voraus</label>
+                  <label for="deep2">Baumtiefe</label>
                   <select id="deep2" class="form-control">
                     <option>1</option>
                     <option>2</option>
-                    <option>3</option>
+                    <option selected>3</option>
                     <option>4</option>
                     <option>5</option>
                     <option>6</option>
@@ -160,25 +156,18 @@
                 <div id="expSet2Box" class="form-group setting-drop-down center">
                   <label for="expSet2">Lernepisoden</label>
                   <select id="expSet2" class="form-control">
-                    <option>5000</option>
-                    <option>1000</option>
-                    <option>500</option>
+                    <option value="500000">500.000</option>
+                    <option value="250000">250.000</option>
+                    <option value="125000">125.000</option>
+                    <option value="60000">60.000</option>
+                    <option value="30000">30.000</option>
+                    <option value="15000">15.000</option>
                   </select>
                 </div>
               </div>
               <div>
-                <div id="exploSet2Box" class="form-group setting-drop-down center">
-                  <label for="exploSet2">Explorationsfaktor</label>
-                  <select id="exploSet2" class="form-control">
-                    <option>0.9</option>
-                    <option>0.7</option>
-                    <option>0.5</option>
-                  </select>
-                </div>
-                <div>
-                  <button id="back2" type="button" class="btn btn-primary-outline"><i
-                      class="fas fa-undo fa-lg"></i></i></button>
-                </div>
+                <button id="back2" type="button" class="btn btn-primary-outline"><i
+                    class="fas fa-undo fa-lg"></i></i></button>
               </div>
             </form>
           </div>
@@ -210,8 +199,8 @@
                 class="fas fa-undo fa-lg"></i></i></button>
           </div>
         </div>
-        <div class="col-6 text-center bottom">
-          <div>
+        <div class="col-6 bottom">
+          <div class="text-center">
             <button id="help" type="button" class="btn btn-primary-outline" data-toggle="modal"
               data-target="#settingsModal"><i class="far fa-question-circle fa-lg"></i></button>
             <button id="startGame" type="button" class="btn btn-primary toolEvent">Spiel starten</button>
@@ -237,14 +226,14 @@
   <script src="{{ url_for('static', filename='js/script.js') }}" type="text/javascript"></script>
 </body>
 
-<!-- The Modal -->
-<div id="settingsModal" class="modal">
+<!-- Info Modal -->
+<div id="alertModal" class="modal">
   <div class="modal-dialog">
     <div class="modal-content">
 
       <!-- Modal Header -->
       <div class="modal-header">
-        <h4 class="modal-title">Ups!</h4>
+        <h4 class="modal-title">Information:</h4>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
 
@@ -252,13 +241,118 @@
       <div class="modal-body">
         Bitte wähle die Einstellungen für Spieler 1 und Spieler 2 aus bevor du das Spiel startest.
       </div>
-
       <!-- Modal footer -->
       <div class="modal-footer">
         <div class="container-fluid">
           <div class="row">
             <div class="col-auto mx-auto">
               <button type="button" class="btn btn-primary" data-dismiss="modal">Verstanden</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- The Modal -->
+<div id="infoModal" class="modal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Informationen zur Anwendung:</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body text-center">
+        <nav id="navHeader">
+          <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
+              aria-controls="nav-home" aria-selected="true">Anleitung</a>
+            <a class="nav-item nav-link" id="nav-rules-tab" data-toggle="tab" href="#nav-rules" role="tab"
+              aria-controls="nav-rules" aria-selected="true">Regeln</a>
+            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
+              aria-controls="nav-profile" aria-selected="false">Einstellungen</a>
+            <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
+              aria-controls="nav-contact" aria-selected="false">Weitere Informationen</a>
+          </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+          <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+            <p><b>Einstellungen:</b><br>
+              Mit Hilfe der runden Schaltflächen in den Spalten Spieler 1 und Spieler 2 kann ausgewählt werden,
+              ob ein Spieler durch ein Programm gesteuert werden soll oder durch einen Menschen.
+              Dadurch ist es möglich als Mensch gegen ein Programm anzutreten oder zwei Programme gegeneinander antreten
+              zu lassen.
+              Die möglichen Programme stehen nach Betätigung der Schaltflächen zur Verfügung. Hierbei können zusätzliche
+              Parameter bestimmt werden,
+              welche den Schwierigkeitsgrad beeinflussen. Dabei ist ein höherer Wert mit einer erhöhten Schwierigkeit in Verbindung zu bringen. Erst wenn die entsprechenden Einstellungen bestätigt sind kann
+              ein neues Spiel gestartet werden. Es ist zu beachten das bei der Auswahl des Minimax Algorithmus mit einem hohen Parameter die Berechnung
+              des Zuges viel Zeit in Anspruch nimmt. <br><br>
+              <b>Weitere Funktionen:</b><br>
+              Es ist außerdem möglich ein laufendes Spiel durch die Aktivierung eines Pfeilsymbols in Spalte 1 oder Spalte 3 zu unterbrechen.
+              Dadurch können die Einstellungen konfiguriert und anschließend das Spiel fortgesetzt werden.
+              Des Weiteren ist es möglich unter dem Reiter Einstellungen die Anzeige der Spaltenbewertung zu
+              beeinflussen. Dabei sind die dargestellten Bewertungen von 1-7 zu lesen, sodass die mit 1 bewertete Spalte laut Algorithmus die beste ist.
+              Für den Fall das zwei Programme gegeneinander spielen ist es notwendig, dass der Speilerwechsel mit dem Button unter dem Spielfeld ausgelöst wird.</p>
+          </div>
+          <div class="tab-pane fade" id="nav-rules" role="tabpanel" aria-labelledby="nav-rules-tab">
+            <p><b>Spielziel:</b> <br>Das Ziel des Spiels ist es 4 Steine der eigenen Farbe horizontal, vertikal oder
+              diagonal aneinander zu
+              reihen.<br><br>
+              <b>Spielablauf:</b><br>
+              Es werden abwechselnd von beiden Spielern Steine in eine beliebige freie Spalte geworfen.
+              Die möglichen Positionen werden angezeigt, sobald mit der Maus über eine entsprechende Zelle gefahren
+              wird.<br><br>
+              <b>Spielerwechsel:</b><br>
+              Es sollte berücksichtigt werden, dass der zuerste setzende Spieler einen deutlichen Vorteil hat.
+              Denn das Spiel ist ein mathematisch gelöstes
+              Problem, sodass der zuerst setzende Spieler
+              theoretisch immer gewinnen kann. Eine perfekte Künstliche Spielintelligenz würde somit gegen die optimale
+              Verteidigung immer gewinnen, sofern sie den Eröffnungszug hat und den ersten Spielstein in die mittlere
+              Spalte setzt. Bei beidseitig perfekten Spiel und einem Eröffnungszug links oder rechts neben der Mitte,
+              würde es zu einem Remis kommen. Sobald der erste Stein in eine der übrigen Spalten gesetzt wird, verliert
+              der startende Spieler gegen eine perfekte Verteidigung.
+              Deshalb sollte nach jedem Spiel ein Wechsel der Farben stattfinden.
+            </p>
+          </div>
+          <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+            <div id="selectShowColValues" class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="showSwitch">
+              <label class="custom-control-label" for="showSwitch">Spaltenbewertung ausblenden</label>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+            <p><b>Anwendungsbeschreibung:</b><br>
+            Diese Anwendung wurde im Rahmen einer Bachelorarbeit im Jahr 2019 an der Technischen Hochschule Wildau im
+              Studiengang Telematik erstellt. Zielsetzung dieser Arbeit
+              ist die Entwicklung einer Künstlichen Intelligenz für das Spiel &bdquo;4 Gewinnt&ldquo; mit Hilfe von
+              Reinforcement Learning. Zum Vergleich der daraus resultierenden Künstlichen Intelligenz wurde außerdem der
+              Minimax Algorithmus als herkömmliche Lösungsstrategie für &bdquo;4 Gewinnt&ldquo; implementiert.
+              Zusätzlich wurde noch ein Algorithmus der lediglich einen Zug in die Zukunft sieht und ansonsten zufällig
+              setzt eingebaut.<br><br>
+              <b>Quelle:</b><br>
+              Was Reinforcement Learning ist und wie sich dieser Fachbereich in das Gebiet der Künstlichen Intelligenz
+              einreiht kann im Rahmen der
+              <a href="#"
+                onclick="window.open('{{ url_for('static', filename='files/Bachelorarbeit.pdf') }}', '_blank', 'fullscreen=yes'); return false;">Bachelorarbeit</a>
+              nachgelesen werden.
+              Der <a target="_blank" rel="noopener noreferrer"
+                href="https://de.wikipedia.org/wiki/Minimax-Algorithmus">Minimax Algorithmus</a> ist hingegen kein
+              Verfahren des Reinforcement Learning und benutzt eine Baumstruktur um mehrere Spielzüge im voraus zu
+              berechnen.</p>
+          </div>
+        </div>
+      </div>
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-auto mx-auto">
+              <button type="button" class="btn btn-primary" data-dismiss="modal">Schließen</button>
             </div>
           </div>
         </div>

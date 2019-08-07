@@ -20,13 +20,11 @@ function createRequestData() {
 		if (gameModeValue1 == "td") {
 			var depth = document.getElementById("deep1").value;
 			var exp = document.getElementById("expSet1").value;
-			var explo = document.getElementById("exploSet1").value;
 			jsonRequest = JSON.stringify({
 				"grid": jsonGrid,
 				"player": currPlayer,
 				"mode": "td",
 				"exp": exp,
-				"explo": explo
 			})
 		}
 		if (gameModeValue1 == "mm") {

@@ -13,6 +13,10 @@ var gridHeight = size * 6;
 var gridData = null;
 var colValuesData = null;
 
+var turnDelay = 1500;
+var manualTurn = false;
+var hideColValues = false;
+
 /**
  * D3.js data init and rendering
  */
@@ -125,15 +129,15 @@ function renderGrid() {
                 d3.select(d3.event.target).on("click", null);
                 d3.select(d3.event.target).on("mouseover", null);
                 d3.select(d3.event.target).on("mouseout", null);
-                if (gameEnded == false) {
-                    if (player1pickedSet && player2pickedSet) {
-                        setTimeout(function () {
+                    if (gameEnded == false) {
+                        if (player1pickedSet && player2pickedSet) {
+                            manualTurn = true;
+                            document.getElementById("startGame").classList.remove("disableAndOpacity");
+                            document.getElementById("startGame").innerText = "Nächster Zug";
+                        } else {
                             checkAiTurn();
-                        }, 1500);
-                    } else {
-                        checkAiTurn();
+                        }
                     }
-                }
             }
         });
 }
@@ -233,7 +237,7 @@ function renderColValues() {
             return d.text;
         })
         .style("fill", "black")
-        .style("font-size", "2em")
+        .style("font-size", "2em") 
 }
 
 function resizeGridAndColValues() {
@@ -269,7 +273,7 @@ function resizeGridAndColValues() {
 }
 
 function refreshColValues(response) {
-    if (Object.keys(response).length == 1) {
+    if (Object.keys(response).length == 1 || hideColValues) {
         for (var row = 0; row < 1; row++) {
             for (var column = 0; column < 7; column++) {
                 colValuesData[row][column].text = "";

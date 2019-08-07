@@ -4,15 +4,14 @@
       "agent_args": 
         {
           "learning_rate": 0.01,
-          "learning_rate_min": 0.005,
           "gamma": 0.95,
-          "epsilon": 0.2,
-          "epsilon_min": 0.1
+          "epsilon": 0.1
         },
       "file_name": "models/model.h5",
-      "resume_training": true,
-      "num_episodes": 300000,
+      "resume_training": false,
+      "num_episodes": 55000,
       "life_plot": false,
       "create_stats": true
     }
 }
+
