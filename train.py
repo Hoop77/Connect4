@@ -29,9 +29,9 @@ def train(stats=None, file_name='models/model.h5',
 
         if create_stats and episode % 25 == 0:
             stats.append_stats("<episode="+str(episode)+">")
-            stats.append_stats("<loss="+np.format_float_positional((np.round(np.float32(loss),6)))+">")
-            stats.append_stats("<epsilon="+np.format_float_positional((np.round(np.float32(epsilon),6)))+">")
-            stats.append_stats("<learning_rate="+np.format_float_positional((np.round(np.float32(learning_rate),6)))+">")
+            stats.append_stats("<loss="+np.round(np.float32(loss),6)+">")
+            stats.append_stats("<epsilon="+np.round(np.float32(epsilon),6)+">")
+            stats.append_stats("<learning_rate="+np.round(np.float32(learning_rate),6)+">")
 
         if life_plot and episode % 25 == 0:
             life_plot_stats['episode'].append(episode)

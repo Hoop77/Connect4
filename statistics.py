@@ -22,10 +22,10 @@ class Stats:
         f.close()
 
     def plot_stats(self, file_name):
-        episode_pattern = re.compile("<(episode=)([0-9\.]*)>")
-        loss_pattern = re.compile("<(loss=)([0-9\.]*)>")
-        epsilon_pattern = re.compile("<(epsilon=)([0-9\.]*)>")
-        learning_rate_pattern = re.compile("<(learning_rate=)([0-9\.]*)>")
+        episode_pattern = re.compile("<(episode=)(.*?)>")
+        loss_pattern = re.compile("<(loss=)(.*?)>")
+        epsilon_pattern = re.compile("<(epsilon=)(.*?)>")
+        learning_rate_pattern = re.compile("<(learning_rate=)(.*?)>")
 
         f = open(file_name, "r")
         file_content = f.read()
