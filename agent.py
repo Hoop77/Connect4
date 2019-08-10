@@ -16,14 +16,12 @@ REWARD_TABLE = {
 
 class Agent:
     def __init__(self,
-                num_episodes=None,
                  gamma=0.95,
                  epsilon=0.2,
                  epsilon_min=0.1,
                  learning_rate=0.01,
                  learning_rate_min=0.001,
                  **kwargs):
-        self.num_episodes = num_episodes
         self.gamma = gamma
         self.epsilon = epsilon
         self.epsilon_min = epsilon_min
@@ -90,12 +88,6 @@ class Agent:
         best_next_state = next_states[target_max_idx]
         return best_next_state, player * target_max
 
-    def load(self, path):
-        self.model.load_weights(path)
-
-    def save(self, path):
-        self.model.save_weights(path)
-
     def build_model(self):
         input_shape = (board.NUM_ROWS, board.NUM_COLS, 1)
         model = Sequential()
@@ -117,6 +109,12 @@ class Agent:
         self.compile_model(model)
 
         return model
+
+    def load(self, path):
+        self.model.load_weights(path)
+
+    def save(self, path):
+        self.model.save_weights(path)
     
     def compile_model(self, model):
         model.compile(optimizer=SGD(lr=self.learning_rate), loss='mean_squared_error')
