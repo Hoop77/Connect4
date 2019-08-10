@@ -43,7 +43,7 @@ def calculate_response(request, board):
 				return generate_response_json(col, free_cols, col_values, player)
 	if request.json['mode'] == "mm":
 		depth = int(request.json['depth'])
-		col, _ = minimax(board, depth, -math.inf, math.inf, True, player)
+		col, _ = minimax(board, depth, -math.inf, math.inf, True)
 		return {"column": int(col)}
 	if request.json['mode'] == "rb":
 		col = random_block(board, player)

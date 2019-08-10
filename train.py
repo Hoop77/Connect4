@@ -18,20 +18,20 @@ def train(stats=None, file_name='models/model.h5',
     life_plot_stats = get_life_plot_stats()
     plt_data = show_life_plot(life_plot_stats, data=None)
 
-    agent = Agent(num_episodes, **agent_args)
+    agent = Agent(**agent_args)
     if resume_training:
         agent.load(file_name)
 
     for episode in range(num_episodes + 1):
-        print('Episode {}/{}'.format(episode, num_episodes))
-
         loss, epsilon, learning_rate = agent.self_play()
+
+        print('Episode {}/{}'.format(episode, num_episodes))
 
         if create_stats and episode % 25 == 0:
             stats.append_stats("<episode="+str(episode)+">")
-            stats.append_stats("<loss="+np.round(np.float32(loss),6)+">")
-            stats.append_stats("<epsilon="+np.round(np.float32(epsilon),6)+">")
-            stats.append_stats("<learning_rate="+np.round(np.float32(learning_rate),6)+">")
+            stats.append_stats("<loss="+str(np.round(np.float32(loss),6))+">")
+            stats.append_stats("<epsilon="+str(np.round(np.float32(epsilon),6))+">")
+            stats.append_stats("<learning_rate="+str(np.round(np.float32(learning_rate),6))+">")
 
         if life_plot and episode % 25 == 0:
             life_plot_stats['episode'].append(episode)
@@ -43,6 +43,10 @@ def train(stats=None, file_name='models/model.h5',
 
         if episode % 100 == 0:
             agent.save(file_name)
+
+        if episode % 10000 == 0 and episode < 50000:
+            model_path = "models/model"+str(episode)+".h5"
+            agent.save(model_path)
 
         if episode % 50000 == 0:
             model_path = "models/model"+str(episode)+".h5"
