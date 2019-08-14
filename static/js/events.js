@@ -41,15 +41,18 @@ document.getElementById("confirmBtn1").addEventListener("click", function () {
 
     var tempGameMode = document.getElementById("gameMode1");
     document.getElementById("setList1").innerHTML = "";
-    if (tempGameMode.value == "td") {
+    if (tempGameMode.value == "sp") {
         var tempExpSet = document.getElementById("expSet1").value;
-        document.getElementById("setList1").innerHTML += "<p>TD Learning</p>"
+        document.getElementById("setList1").innerHTML += "<p>Self-Play</p>"
         document.getElementById("setList1").innerHTML += "<p>" + tempExpSet + "</p>"
     }
     if (tempGameMode.value == "mm") {
         var tempTreeDepth = document.getElementById("deep1").value;
         document.getElementById("setList1").innerHTML += "<p>Minimax</p>"
         document.getElementById("setList1").innerHTML += "<p>" + tempTreeDepth + "</p>"
+    }
+    if (tempGameMode.value == "rb") {
+        document.getElementById("setList2").innerHTML += "<p>Random/Block</p>"
     }
     player1pickedSet = true;
 });
@@ -62,15 +65,18 @@ document.getElementById("confirmBtn2").addEventListener("click", function () {
 
     var tempGameMode = document.getElementById("gameMode2");
     document.getElementById("setList2").innerHTML = "";
-    if (tempGameMode.value == "td") {
+    if (tempGameMode.value == "sp") {
         var tempExpSet = document.getElementById("expSet2").value;
-        document.getElementById("setList2").innerHTML += "<p>TD Learning</p>"
+        document.getElementById("setList2").innerHTML += "<p>Self-Play</p>"
         document.getElementById("setList2").innerHTML += "<p>" + tempExpSet + "</p>"
     }
     if (tempGameMode.value == "mm") {
         var tempTreeDepth = document.getElementById("deep2").value;
         document.getElementById("setList2").innerHTML += "<p>Minimax</p>"
         document.getElementById("setList2").innerHTML += "<p>" + tempTreeDepth + "</p>"
+    }
+    if (tempGameMode.value == "rb") {
+        document.getElementById("setList2").innerHTML += "<p>Random/Block</p>"
     }
     player2pickedSet = true;
 });
@@ -145,7 +151,7 @@ document.getElementById("gameMode1").addEventListener("change", function () {
         document.getElementById("expSet1Box").style.display = "none";
         document.getElementById("deep1Box").style.display = "block";
     }
-    if (this.value == "td") {
+    if (this.value == "sp") {
         document.getElementById("deep1Box").style.display = "none";
         document.getElementById("expSet1Box").style.display = "block";
     }
@@ -160,7 +166,7 @@ document.getElementById("gameMode2").addEventListener("change", function () {
         document.getElementById("expSet2Box").style.display = "none";
         document.getElementById("deep2Box").style.display = "block";
     }
-    if (this.value == "td") {
+    if (this.value == "sp") {
         document.getElementById("deep2Box").style.display = "none";
         document.getElementById("expSet2Box").style.display = "block";
     }

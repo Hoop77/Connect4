@@ -17,14 +17,13 @@ function createRequestData() {
 		var gameMode1 = document.getElementById("gameMode1");
 		var gameModeValue1 = gameMode1.options[gameMode1.selectedIndex].value;
 
-		if (gameModeValue1 == "td") {
-			var depth = document.getElementById("deep1").value;
+		if (gameModeValue1 == "sp") {
 			var exp = document.getElementById("expSet1").value;
 			jsonRequest = JSON.stringify({
 				"grid": jsonGrid,
 				"player": currPlayer,
-				"mode": "td",
-				"exp": exp,
+				"mode": "sp",
+				"exp": exp
 			})
 		}
 		if (gameModeValue1 == "mm") {
@@ -47,14 +46,13 @@ function createRequestData() {
 		var gameMode2 = document.getElementById("gameMode2");
 		var gameModeValue2 = gameMode2.options[gameMode2.selectedIndex].value;
 
-		if (gameModeValue2 == "td") {
-			var depth = document.getElementById("deep2").value;
-			var depth = document.getElementById("deep2").value;
+		if (gameModeValue2 == "sp") {
+			var exp = document.getElementById("expSet2").value;
 			jsonRequest = JSON.stringify({
 				"grid": jsonGrid,
 				"player": currPlayer,
-				"mode": "td",
-				"depth": depth
+				"mode": "sp",
+				"exp": exp
 			})
 		}
 		if (gameModeValue2 == "mm") {

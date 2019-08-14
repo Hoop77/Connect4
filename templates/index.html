@@ -54,7 +54,7 @@
                 <div class="form-group setting-drop-down center">
                   <label for="gameMode1">Alogrithmus</label>
                   <select id="gameMode1" class="form-control">
-                    <option value="td">TD-Learning</option>
+                    <option value="sp">Self-Play</option>
                     <option value="mm">Minimax</option>
                     <option value="rb">Random/Block</option>
                   </select>
@@ -69,8 +69,6 @@
                     <option selected>3</option>
                     <option>4</option>
                     <option>5</option>
-                    <option>6</option>
-                    <option>7</option>
                   </select>
                 </div>
               </div>
@@ -79,10 +77,11 @@
                   <label for="expSet1">Lernepisoden</label>
                   <select id="expSet1" class="form-control">
                     <option value="500000">500.000</option>
-                    <option value="250000">250.000</option>
-                    <option value="125000">125.000</option>
-                    <option value="60000">60.000</option>
-                    <option value="30000">30.000</option>
+                    <option value="400000">400.000</option>
+                    <option value="300000">300.000</option>
+                    <option value="200000">200.000</option>
+                    <option value="100000">100.000</option>
+                    <option value="50000">50.000</option>
                     <option value="15000">15.000</option>
                   </select>
                 </div>
@@ -132,7 +131,7 @@
                 <div class="form-group setting-drop-down center">
                   <label for="gameMode2">Alogrithmus</label>
                   <select id="gameMode2" class="form-control">
-                    <option value="td">TD-Learning</option>
+                    <option value="sp">Self-Play</option>
                     <option value="mm">Minimax</option>
                     <option value="rb">Random/Block</option>
                   </select>
@@ -147,8 +146,6 @@
                     <option selected>3</option>
                     <option>4</option>
                     <option>5</option>
-                    <option>6</option>
-                    <option>7</option>
                   </select>
                 </div>
               </div>
@@ -157,10 +154,11 @@
                   <label for="expSet2">Lernepisoden</label>
                   <select id="expSet2" class="form-control">
                     <option value="500000">500.000</option>
-                    <option value="250000">250.000</option>
-                    <option value="125000">125.000</option>
-                    <option value="60000">60.000</option>
-                    <option value="30000">30.000</option>
+                    <option value="400000">400.000</option>
+                    <option value="300000">300.000</option>
+                    <option value="200000">200.000</option>
+                    <option value="100000">100.000</option>
+                    <option value="50000">50.000</option>
                     <option value="15000">15.000</option>
                   </select>
                 </div>
@@ -289,15 +287,20 @@
               zu lassen.
               Die möglichen Programme stehen nach Betätigung der Schaltflächen zur Verfügung. Hierbei können zusätzliche
               Parameter bestimmt werden,
-              welche den Schwierigkeitsgrad beeinflussen. Dabei ist ein höherer Wert mit einer erhöhten Schwierigkeit in Verbindung zu bringen. Erst wenn die entsprechenden Einstellungen bestätigt sind kann
-              ein neues Spiel gestartet werden. Es ist zu beachten das bei der Auswahl des Minimax Algorithmus mit einem hohen Parameter die Berechnung
+              welche den Schwierigkeitsgrad beeinflussen. Dabei ist ein höherer Wert mit einer erhöhten Schwierigkeit in
+              Verbindung zu bringen. Erst wenn die entsprechenden Einstellungen bestätigt sind kann
+              ein neues Spiel gestartet werden. Es ist zu beachten das bei der Auswahl des Minimax Algorithmus mit einem
+              hohen Parameter die Berechnung
               des Zuges viel Zeit in Anspruch nimmt. <br><br>
               <b>Weitere Funktionen:</b><br>
-              Es ist außerdem möglich ein laufendes Spiel durch die Aktivierung eines Pfeilsymbols in Spalte 1 oder Spalte 3 zu unterbrechen.
+              Es ist außerdem möglich ein laufendes Spiel durch die Aktivierung eines Pfeilsymbols in Spalte 1 oder
+              Spalte 3 zu unterbrechen.
               Dadurch können die Einstellungen konfiguriert und anschließend das Spiel fortgesetzt werden.
               Des Weiteren ist es möglich unter dem Reiter Einstellungen die Anzeige der Spaltenbewertung zu
-              beeinflussen. Dabei sind die dargestellten Bewertungen von 1-7 zu lesen, sodass die mit 1 bewertete Spalte laut Algorithmus die beste ist.
-              Für den Fall das zwei Programme gegeneinander spielen ist es notwendig, dass der Speilerwechsel mit dem Button unter dem Spielfeld ausgelöst wird.</p>
+              beeinflussen. Dabei sind die dargestellten Bewertungen von 1-7 zu lesen, sodass die mit 1 bewertete Spalte
+              laut Algorithmus die beste ist.
+              Für den Fall das zwei Programme gegeneinander spielen ist es notwendig, dass der Speilerwechsel mit dem
+              Button unter dem Spielfeld ausgelöst wird.</p>
           </div>
           <div class="tab-pane fade" id="nav-rules" role="tabpanel" aria-labelledby="nav-rules-tab">
             <p><b>Spielziel:</b> <br>Das Ziel des Spiels ist es 4 Steine der eigenen Farbe horizontal, vertikal oder
@@ -311,7 +314,7 @@
               Es sollte berücksichtigt werden, dass der zuerste setzende Spieler einen deutlichen Vorteil hat.
               Denn das Spiel ist ein mathematisch gelöstes
               Problem, sodass der zuerst setzende Spieler
-              theoretisch immer gewinnen kann. Eine perfekte Künstliche Spielintelligenz würde somit gegen die optimale
+              theoretisch immer gewinnen kann. Eine perfekte künstliche Spielintelligenz würde somit gegen die optimale
               Verteidigung immer gewinnen, sofern sie den Eröffnungszug hat und den ersten Spielstein in die mittlere
               Spalte setzt. Bei beidseitig perfekten Spiel und einem Eröffnungszug links oder rechts neben der Mitte,
               würde es zu einem Remis kommen. Sobald der erste Stein in eine der übrigen Spalten gesetzt wird, verliert
@@ -327,15 +330,15 @@
           </div>
           <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
             <p><b>Anwendungsbeschreibung:</b><br>
-            Diese Anwendung wurde im Rahmen einer Bachelorarbeit im Jahr 2019 an der Technischen Hochschule Wildau im
+              Diese Anwendung wurde im Rahmen einer Bachelorarbeit im Jahr 2019 an der Technischen Hochschule Wildau im
               Studiengang Telematik erstellt. Zielsetzung dieser Arbeit
-              ist die Entwicklung einer Künstlichen Intelligenz für das Spiel &bdquo;4 Gewinnt&ldquo; mit Hilfe von
-              Reinforcement Learning. Zum Vergleich der daraus resultierenden Künstlichen Intelligenz wurde außerdem der
+              ist die Entwicklung einer künstlichen Intelligenz für das Spiel &bdquo;4 Gewinnt&ldquo; mit Hilfe von
+              Reinforcement Learning. Zum Vergleich der daraus resultierenden künstlichen Intelligenz wurde außerdem der
               Minimax Algorithmus als herkömmliche Lösungsstrategie für &bdquo;4 Gewinnt&ldquo; implementiert.
               Zusätzlich wurde noch ein Algorithmus der lediglich einen Zug in die Zukunft sieht und ansonsten zufällig
               setzt eingebaut.<br><br>
               <b>Quelle:</b><br>
-              Was Reinforcement Learning ist und wie sich dieser Fachbereich in das Gebiet der Künstlichen Intelligenz
+              Was Reinforcement Learning ist und wie sich dieser Fachbereich in das Gebiet der künstlichen Intelligenz
               einreiht kann im Rahmen der
               <a href="#"
                 onclick="window.open('{{ url_for('static', filename='files/Bachelorarbeit.pdf') }}', '_blank', 'fullscreen=yes'); return false;">Bachelorarbeit</a>

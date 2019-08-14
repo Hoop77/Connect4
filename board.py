@@ -1,16 +1,19 @@
 import math
 import numpy as np
 
+# Game board shape
 NUM_ROWS = 6
 NUM_COLS = 7
 
 STATE_SHAPE = (NUM_ROWS, NUM_COLS)
 NUM_ACTIONS = NUM_COLS
 
+# Player representation
 FREE = 0
 PLAYER_1 = 1
 PLAYER_2 = -1
 
+# Reward
 OUTCOME_NONE = 0
 OUTCOME_WIN = 1
 OUTCOME_DEFEAT = 2
@@ -58,11 +61,10 @@ def check_for_winner(board, player):
 	return False
 	
 def check_terminal_node(board):
-	return check_for_winner(board, 1) or check_for_winner(board, 2) or len(get_free_columns(board)) == 0
+	return check_for_winner(board, PLAYER_1) or check_for_winner(board, PLAYER_2) or len(get_free_columns(board)) == 0
 	
 def evaluate_section(toEvaluate, currPlayer):
 	score = 0
-	free = 0
 	enemy = PLAYER_2
 	
 	if currPlayer == PLAYER_1:
@@ -71,14 +73,18 @@ def evaluate_section(toEvaluate, currPlayer):
 		enemy = PLAYER_1
 
 	if toEvaluate.count(currPlayer) == 4:
-		score += 100
-	elif toEvaluate.count(currPlayer) == 3 and toEvaluate.count(free) == 1:
-		score += 5
-	elif toEvaluate.count(currPlayer) == 2 and toEvaluate.count(free) == 2:
+		score += 4
+	elif toEvaluate.count(currPlayer) == 3 and toEvaluate.count(FREE) == 1:
+		score += 3
+	elif toEvaluate.count(currPlayer) == 2 and toEvaluate.count(FREE) == 2:
 		score += 2
 
-	if toEvaluate.count(enemy) == 3 and toEvaluate.count(free) == 1:
+	if toEvaluate.count(enemy) == 4:
 		score -= 4
+	elif toEvaluate.count(enemy) == 3 and toEvaluate.count(FREE) == 1:
+		score -= 3
+	elif toEvaluate.count(enemy) == 2 and toEvaluate.count(FREE) == 2:
+		score -= 2
 
 	toEvaluate.clear()
 	return score

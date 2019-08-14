@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import numpy as np
 np.random.seed(0)
 from keras.models import Sequential, clone_model
@@ -30,6 +29,7 @@ class Agent:
         self.model = self.build_model()
         self.total_steps = 0
 
+    # used by frontend to predict next move
     def act(self, state, player):
         free_cols = board.get_free_columns(state)
         assert(len(free_cols) > 0)
@@ -37,9 +37,9 @@ class Agent:
         next_states = np.expand_dims(next_states, axis=3)
         values = self.model.predict(next_states).reshape(len(next_states))
         best_col = free_cols[np.argmax(player * values)]
-        print('values: {}\nbest column: {}'.format(values, best_col))
         return best_col, free_cols, values
 
+    # optimize neural network
     def train(self, state, target):
         history = self.model.fit(
             x=state.reshape(1, board.NUM_ROWS, board.NUM_COLS, 1),
@@ -49,6 +49,7 @@ class Agent:
         self.total_steps += 1
         return np.sqrt(history.history['loss'][-1])
 
+    # self-play algorithm simulates one game and learns by outcome
     def self_play(self):
         episode_length = 0
         loss = 0
@@ -88,6 +89,7 @@ class Agent:
         best_next_state = next_states[target_max_idx]
         return best_next_state, player * target_max
 
+    # create neural network
     def build_model(self):
         input_shape = (board.NUM_ROWS, board.NUM_COLS, 1)
         model = Sequential()

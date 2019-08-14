@@ -5,11 +5,11 @@
         {
           "learning_rate": 0.01,
           "gamma": 0.95,
-          "epsilon": 0.1
+          "epsilon": 0.2
         },
       "file_name": "models/model.h5",
       "resume_training": false,
-      "num_episodes": 55000,
+      "num_episodes": 600000,
       "life_plot": false,
       "create_stats": true
     }

@@ -2,26 +2,28 @@ import numpy as np
 import math
 import board
 
-def minimax(state, depth, alpha, beta, maximizing_player):
+# popular algorithm to solve board games, recursive search tree method
+def minimax(state, depth, alpha, beta, maximizing_player, curr_player):
+	enemy = -curr_player
 	free_cols = board.get_free_columns(state)
 	is_terminal_node = board.check_terminal_node(state)
 	if depth == 0 or is_terminal_node:
 		if is_terminal_node:
-			if board.check_for_winner(state, board.PLAYER_1):
-				return (None, 100)
-			elif board.check_for_winner(state, board.PLAYER_2):
-				return (None, -100)
+			if board.check_for_winner(state, curr_player):
+				return None, math.inf
+			elif board.check_for_winner(state, enemy):
+				return None, -math.inf
 			else:
-				return (None, 0)
+				return None, 0
 		else:
-			return (None, board.score_position(state, board.PLAYER_1))
+			return (None, board.score_position(state, curr_player))
 	if maximizing_player:
 		value = -math.inf
 		column = np.random.choice(free_cols)
 		for col in free_cols:
 			temp_state = state.copy()
-			board.drop_piece_inplace(temp_state, col, board.PLAYER_1)
-			new_score = minimax(temp_state, depth-1, alpha, beta, False)[1]
+			board.drop_piece_inplace(temp_state, col, curr_player)
+			new_score = minimax(temp_state, depth-1, alpha, beta, False, curr_player)[1]
 			if new_score > value:
 				value = new_score
 				column = col
@@ -35,8 +37,8 @@ def minimax(state, depth, alpha, beta, maximizing_player):
 		column = np.random.choice(free_cols)
 		for col in free_cols:
 			temp_state = state.copy()
-			board.drop_piece_inplace(temp_state, col, board.PLAYER_2)
-			new_score = minimax(temp_state, depth-1, alpha, beta, True)[1]
+			board.drop_piece_inplace(temp_state, col, enemy)
+			new_score = minimax(temp_state, depth-1, alpha, beta, True, curr_player)[1]
 			if new_score < value:
 				value = new_score
 				column = col
@@ -44,7 +46,8 @@ def minimax(state, depth, alpha, beta, maximizing_player):
 			if alpha >= beta:
 				break
 		return column, value
-		
+
+# method looks one turn ahead
 def random_block(state, curr_player):
 	enemy = -curr_player
 	free_cols = board.get_free_columns(state)
@@ -62,5 +65,6 @@ def random_block(state, curr_player):
 			
 	return np.random.choice(free_cols)
 
+# completly random choice of columns
 def random_choice(state):
 	return np.random.choice(board.get_free_columns(state))

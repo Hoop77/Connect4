@@ -7,8 +7,8 @@ from agent import Agent
 from train import train
 from policy import minimax, random_block, random_choice
 import math
-import tensorflow as tf
 import board
+import tensorflow as tf
 from statistics import Stats
 import tkinter as tk
 from tkinter import filedialog
@@ -17,36 +17,38 @@ app = Flask(__name__)
 
 args = {} # loaded from config.json
 
+# tensorflow need to have everything on same thread
 session = tf.Session()
 graph = tf.get_default_graph()
 with graph.as_default():
 	with session.as_default():
 		agent = Agent(**args)
 
-def serverMode():
-	app.run(debug=True, use_reloader=False) #host='0.0.0.0',port=5000, 
+# start frontend as web application
+def serverMode(ip, port):
+	app.run(debug=True, use_reloader=False, host=ip, port=port)
 
-def calculate_response(request, board):
+def calculate_response(request, state):
 	col = -1
 	free_cols = []
 	col_values = []
 	response_data = {}
 	player = request.json['player']
 
-	if request.json['mode'] == "td":
-		#exp = int(request.json['exp'])
-		#explo = float(request.json['explo'])
+	if request.json['mode'] == "sp":
+		exp = request.json['exp']
+		file_name = "models/selfplay" + exp + ".h5"
 		with graph.as_default():
 			with session.as_default():
-				agent.load(args['file_name'])
-				col, free_cols, col_values = agent.act(board, player)
+				agent.load(file_name)
+				col, free_cols, col_values = agent.act(state, player)
 				return generate_response_json(col, free_cols, col_values, player)
 	if request.json['mode'] == "mm":
 		depth = int(request.json['depth'])
-		col, _ = minimax(board, depth, -math.inf, math.inf, True)
+		col, _ = minimax(state, depth, -math.inf, math.inf, True, player)
 		return {"column": int(col)}
 	if request.json['mode'] == "rb":
-		col = random_block(board, player)
+		col = random_block(state, player)
 		return {"column": int(col)}
 		
 	return generate_response_json(col, free_cols, col_values)
@@ -65,15 +67,17 @@ def generate_response_json(col, free_cols, col_values, player):
 
 	return response_data
 
+# frontend hosting
 @app.route("/")
 def index():
 	return render_template('index.html')
 	
+# endpoint for communication between front- and backend
 @app.route('/data', methods=['POST'])
 def data():
 	gridData = request.json['grid']
-	board = np.array(gridData)
-	response_data = calculate_response(request, board)
+	state = np.array(gridData)
+	response_data = calculate_response(request, state)
 	jsonResponse = json.dumps(response_data)
 	
 	return jsonResponse
@@ -93,7 +97,9 @@ def main():
 
 	if mode == 1:
 		print("\nYou picked the server mode!\n")
-		serverMode()
+		ip = input("IP-Address (localhost=127.0.0.1): \n")
+		port = int(input("Port (default=5000): \n"))
+		serverMode(ip, port)
 	elif mode == 2:
 		print("\nYou picked the training mode!\n")
 		if args['create_stats']:
